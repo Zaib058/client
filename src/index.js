@@ -5,6 +5,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 root.render(
   <React.StrictMode>
     <App />
