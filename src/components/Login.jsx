@@ -11,7 +11,7 @@ const Login = () => {
   const [selected, setSelected] = useState("Student");
   const { register, handleSubmit } = useForm();
   const onSubmit = (data) => {
-    if (data.login !== "" && data.password !== "") {
+    if (data.loginid !== "" && data.password !== "") {
       const headers = {
         "Content-Type": "application/json",
       };
@@ -52,7 +52,7 @@ const Login = () => {
               {selected && selected} Login ID
             </label>
             <input
-              type="number"
+              type="string"
               id="eno"
               required
               className="bg-white outline-none border-2 border-gray-400 py-2 px-4 rounded-md w-full focus:border-blue-500"
