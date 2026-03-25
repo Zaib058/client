@@ -19,7 +19,7 @@ import Login from './components/Login'
 function App() {
   return (
     <Provider store={mystore}>
-    <Router>
+    <Router basename="/client">
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<HomePage/>} />
