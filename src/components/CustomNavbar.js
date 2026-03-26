@@ -1,124 +1,41 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Button } from 'react-bootstrap';
-import logo from "../pages/asset/logo.jpg"
-import { color } from "framer-motion";
+import logo from "../pages/asset/logo.jpg";
 
 const CustomNavbar = () => {
   return (
-    <>
-      <nav className="bg-white border-gray-200 dark:bg-gray-900">
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          <Link
-            to="./home"
-            className="flex items-center space-x-3 rtl:space-x-reverse"
-          >
-            <img
-              src= {logo}
-              className="h-8"
-              alt="Flowbite Logo"
-            />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-              Dr Aq Khan College
-            </span>
-          </Link>
-          <button
-            data-collapse-toggle="navbar-default"
-            type="button"
-            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-            aria-controls="navbar-default"
-            aria-expanded="false"
-          >
-            <span className="sr-only">Open main menu</span>
-            <svg
-              className="w-5 h-5"
-              aria-hidden="true"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 17 14"
-            >
-              <path
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M1 1h15M1 7h15M1 13h15"
-              />
-            </svg>
-          </button>
-          <div className="hidden w-full md:block md:w-auto" id="navbar-default">
-            <ul className="font-medium flex flex-col p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 rtl:space-x-reverse md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
-              <li>
-                <Link
-                  to="/"
-                  className="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 dark:text-white md:dark:text-blue-500"
-                  aria-current="page"
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/about"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/gallery_events"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  Events/Gallery
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/prospectus"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  Prospectus
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/contact"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  ContactUs
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/admissions"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  Admissions
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/charter"
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent"
-                >
-                  Charter
-                </Link>
-              </li>
-            </ul>
-            
-          </div>
-          <div>
-  <Link to='/login'>
-    <button className="w-full bg-blue-600 hover:bg-blue-800 text-white py-2 rounded-md font-semibold transition duration-300">
-  Login
-</button>
-  </Link>
-</div>
+    <nav className="bg-[#0b1f3a] text-white shadow-lg w-full">
+      
+      <div className="w-full flex items-center justify-between px-8 py-4">
+        
+        {/* Left: Logo + Title */}
+        <Link to="/home" className="flex items-center space-x-3">
+          <img src={logo} className="h-10" alt="Logo" />
+          <span className="text-2xl font-bold tracking-wide">
+            Dr Aq Khan College
+          </span>
+        </Link>
 
-        </div>
-      </nav>
-    </>
+        {/* Center: Menu */}
+        <ul className="hidden md:flex space-x-10 font-semibold text-lg">
+          <li><Link to="/" className="hover:text-yellow-400 transition">Home</Link></li>
+          <li><Link to="/about" className="hover:text-yellow-400 transition">About</Link></li>
+          <li><Link to="/gallery_events" className="hover:text-yellow-400 transition">Gallery</Link></li>
+          <li><Link to="/prospectus" className="hover:text-yellow-400 transition">Prospectus</Link></li>
+          <li><Link to="/contact" className="hover:text-yellow-400 transition">Contact</Link></li>
+          <li><Link to="/admissions" className="hover:text-yellow-400 transition">Admissions</Link></li>
+          <li><Link to="/charter" className="hover:text-yellow-400 transition">Charter</Link></li>
+        </ul>
+
+        {/* Right: Login */}
+        <Link to="/login">
+          <button className="font-semibold border-2 border-yellow-400 text-yellow-400 px-5 py-2 rounded-md hover:bg-yellow-400 hover:text-black transition duration-300">
+            Login
+          </button>
+        </Link>
+
+      </div>
+    </nav>
   );
 };
 
