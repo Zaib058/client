@@ -32,50 +32,61 @@ const Login = () => {
     } else {
     }
   };
-  return (
-    <div className="bg-white h-[100vh] w-full flex justify-between items-center">
+ return (
+  <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row">
+    
+    {/* Logo Section */}
+    <div className="w-full md:w-1/2 flex justify-center items-center bg-white">
       <img
-        className="w-[45%] h-[100vh] object-cover"
         src={logo}
-        alt=""
+        alt="logo"
+        className="w-[70%] md:w-[80%] lg:w-[60%] object-contain p-6"
       />
-      <div className="w-[40%] flex justify-center items-start flex-col pl-8">
-        <p className="text-3xl font-semibold pb-2 border-b-2 border-green-500">
-          {selected && selected} Login
-        </p>
-        <form
-          className="flex justify-center items-start flex-col w-full mt-10"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <div className="flex flex-col w-[70%]">
-            <label className="mb-1" htmlFor="eno">
-              {selected && selected} Login ID
-            </label>
-            <input
-              type="string"
-              id="eno"
-              required
-              className="bg-white outline-none border-2 border-gray-400 py-2 px-4 rounded-md w-full focus:border-blue-500"
-              {...register("loginid")}
-            />
-          </div>
-          <div className="flex flex-col w-[70%] mt-3">
-            <label className="mb-1" htmlFor="password">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              required
-              className="bg-white outline-none border-2 border-gray-400 py-2 px-4 rounded-md w-full focus:border-blue-500"
-              {...register("password")}
-            />
-          </div>
-          {/* <div className="flex w-[70%] mt-3 justify-start items-center">
-            <input type="checkbox" id="remember" className="accent-blue-500" />{" "}
-            Remember Me
-          </div> */}
-          <button className="bg-blue-500 mt-5 text-white px-6 py-2 text-xl rounded-md hover:bg-blue-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all flex justify-center items-center">
+    </div>
+
+    {/* Login Section */}
+    <div className="w-full md:w-1/2 flex justify-center items-center">
+      <div className="bg-white shadow-lg rounded-xl p-8 w-[90%] sm:w-[70%] md:w-[80%] lg:w-[60%]">
+        
+        {/* Role Tabs */}
+        <div className="flex justify-end mb-4">
+          {["Student", "Faculty", "Admin"].map((role) => (
+            <button
+              key={role}
+              className={`ml-4 font-semibold ${
+                selected === role
+                  ? "border-b-2 border-green-500 text-blue-600"
+                  : "text-gray-500"
+              }`}
+              onClick={() => setSelected(role)}
+            >
+              {role}
+            </button>
+          ))}
+        </div>
+
+        <h2 className="text-2xl font-bold border-b-2 border-green-500 pb-2 mb-6">
+          {selected} Login
+        </h2>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+          <label className="mb-1">{selected} Login ID</label>
+          <input
+            type="text"
+            required
+            className="border-2 border-gray-300 rounded-md px-4 py-2 mb-4 focus:border-blue-500 outline-none"
+            {...register("loginid")}
+          />
+
+          <label className="mb-1">Password</label>
+          <input
+            type="password"
+            required
+            className="border-2 border-gray-300 rounded-md px-4 py-2 mb-4 focus:border-blue-500 outline-none"
+            {...register("password")}
+          />
+
+          <button className="bg-blue-500 hover:bg-blue-700 text-white py-2 rounded-md flex justify-center items-center mt-2 transition">
             Login
             <span className="ml-2">
               <FiLogIn />
@@ -83,35 +94,11 @@ const Login = () => {
           </button>
         </form>
       </div>
-      <div className="absolute top-4 right-4">
-        <button
-          className={`text-blue-500 mr-6 text-base font-semibold hover:text-blue-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
-            selected === "Student" && "border-b-2 border-green-500"
-          }`}
-          onClick={() => setSelected("Student")}
-        >
-          Student
-        </button>
-        <button
-          className={`text-blue-500 mr-6 text-base font-semibold hover:text-blue-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
-            selected === "Faculty" && "border-b-2 border-green-500"
-          }`}
-          onClick={() => setSelected("Faculty")}
-        >
-          Faculty
-        </button>
-        <button
-          className={`text-blue-500 mr-6 text-base font-semibold hover:text-blue-700 ease-linear duration-300 hover:ease-linear hover:duration-300 hover:transition-all transition-all ${
-            selected === "Admin" && "border-b-2 border-green-500"
-          }`}
-          onClick={() => setSelected("Admin")}
-        >
-          Admin
-        </button>
-      </div>
-      <Toaster position="bottom-center" />
     </div>
-  );
+
+    <Toaster position="bottom-center" />
+  </div>
+);
 };
 
 export default Login;
