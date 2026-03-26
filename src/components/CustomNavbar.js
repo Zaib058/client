@@ -110,9 +110,9 @@ const CustomNavbar = () => {
           </div>
           <div>
   <Link to='/login'>
-    <button className="font-bold text-white border border-yellow-500 hover:bg-yellow-500 hover:text-black px-4 py-2 rounded">
-      Login
-    </button>
+    <button className="w-full bg-blue-600 hover:bg-blue-800 text-white py-2 rounded-md font-semibold transition duration-300">
+  Login
+</button>
   </Link>
 </div>
 
