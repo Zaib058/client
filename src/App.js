@@ -15,6 +15,7 @@ import StudentHome from "./Screens/Student/Home";
 import FacultyHome from "./Screens/Faculty/Home";
 import AdminHome from "./Screens/Admin/Home";
 import Login from './components/Login'
+import MessageDetail from "./pages/MessageDetail";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/admissions" element={<Admissions/>}/>
             <Route path="/about" element={<About/>}/>
             <Route path="/charter" element={<Charter/>}/>
+            <Route path="/message/:id" element={<MessageDetail />} />
         </Route>
 
          <Route path="/login" element={<Login />} />
