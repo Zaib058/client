@@ -197,17 +197,17 @@ const categories = [
       { src: img17, cat: 'Parents Meeting' },   { src: img18, cat: 'Sports' },
       { src: img19, cat: 'Sports' },            { src: img20, cat: 'Sports' },
       { src: img09, cat: 'Student Trips' },     { src: img10, cat: 'Iqbal Day' },
-  { src: img49, cat: 'PBA' },       { src: img54, cat: 'Extra Learning Classes' },
-  { src: img50, cat: 'PBA' },       { src: img55, cat: 'Extra Learning Classes' },
-  { src: img51, cat: 'PBA' }, { src: img56, cat: 'Extra Learning Classes' },
-  { src: board1, cat: 'Board Meeting' },       { src: img57, cat: 'Extra Learning Classes' },
+  { src: img49, cat: 'PBA' },       { src: img54, cat: 'Orientation' },
+  { src: img50, cat: 'PBA' },       { src: img55, cat: 'Orientation' },
+  { src: img51, cat: 'PBA' }, { src: img56, cat: 'Orientation' },
+  { src: board1, cat: 'Board Meeting' },       { src: img57, cat: 'Orientation' },
   { src: board2, cat: 'Board Meeting' }, { src: board3, cat: 'Board Meeting' }
 
     ]
   }
 ];
 
-const filterTabs = ['All', 'Career Counseling', 'PBA' ,'Student Trips', 'Iqbal Day', 'Extra Learning Classes','Parents Meeting', 'Board Meeting' ,'Sports', 'Orientation', 'Campus Life'];
+const filterTabs = ['All', 'Career Counseling', 'PBA' ,'Student Trips', 'Iqbal Day', 'Parents Meeting', 'Board Meeting' ,'Sports', 'Orientation', 'Campus Life'];
 
 const allImages = [
   { src: img15, cat: 'Career Counseling' }, { src: img04, cat: 'Career Counseling' },
@@ -221,10 +221,10 @@ const allImages = [
   { src: img17, cat: 'Parents Meeting' },   { src: img18, cat: 'Sports' },
   { src: img19, cat: 'Sports' },            { src: img20, cat: 'Sports' },
   { src: img09, cat: 'Student Trips' },     { src: img10, cat: 'Iqbal Day' },
-  { src: img49, cat: 'PBA' },       { src: img54, cat: 'Extra Learning Classes' },
-  { src: img50, cat: 'PBA' },       { src: img55, cat: 'Extra Learning Classes' },
-  { src: img51, cat: 'PBA' }, { src: img56, cat: 'Extra Learning Classes' },
-  { src: board1, cat: 'Board Meeting' },       { src: img57, cat: 'Extra Learning Classes' },
+  { src: img49, cat: 'PBA' },       { src: img54, cat: 'Orientation' },
+  { src: img50, cat: 'PBA' },       { src: img55, cat: 'Orientation' },
+  { src: img51, cat: 'PBA' }, { src: img56, cat: 'Orientation' },
+  { src: board1, cat: 'Board Meeting' },       { src: img57, cat: 'Orientation' },
   { src: board2, cat: 'Board Meeting' }, { src: board3, cat: 'Board Meeting' }
 ];
 

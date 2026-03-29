@@ -729,8 +729,8 @@ const About = () => {
                 </p>
                 <div className="aqk-highlight">
                   {[
-                    { icon: '🎓', text: 'FBISE Affiliated Programs' },
-                    { icon: '🤝', text: 'MOUs with IST & Riphah University' },
+                    { icon: '🎓', text: 'FBISE & NAVTEC Affiliated Programs' },
+                    { icon: '🤝', text: 'MOUs with IST, CUST & Riphah University' },
                     { icon: '🏆', text: 'Merit-based Scholarships' },
                     { icon: '📊', text: 'Structured Evaluation System' },
                   ].map((h, i) => (
