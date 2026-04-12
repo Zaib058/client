@@ -1,156 +1,95 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import Heading from "../../components/Heading";
-import { MdOutlineDelete } from "react-icons/md";
 import { baseApiURL } from "../../baseUrl";
+
 const Branch = () => {
-  const [data, setData] = useState({
-    name: "",
-  });
-  const [selected, setSelected] = useState("add");
-  const [branch, setBranch] = useState();
-  useEffect(() => {
-    getBranchHandler();
-  }, []);
+  const [name, setName] = useState("");
+  const [tab, setTab] = useState("add");
+  const [branches, setBranches] = useState([]);
+  const [confirmId, setConfirmId] = useState(null);
 
-  const getBranchHandler = () => {
-    axios
-      .get(`${baseApiURL()}/branch/getBranch`)
-      .then((response) => {
-        if (response.data.success) {
-          setBranch(response.data.branches);
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        toast.error(error.message);
-      });
+  useEffect(() => { fetch(); }, []);
+
+  const fetch = () => {
+    axios.get(`${baseApiURL()}/branch/getBranch`)
+      .then(r => { if (r.data.success) setBranches(r.data.branches); })
+      .catch(err => toast.error(err.message));
   };
 
-  const addBranchHandler = () => {
-    toast.loading("Adding Branch");
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    axios
-      .post(`${baseApiURL()}/branch/addBranch`, data, {
-        headers: headers,
-      })
-      .then((response) => {
-        toast.dismiss();
-        if (response.data.success) {
-          toast.success(response.data.message);
-          setData({ name: "", code: "" });
-          getBranchHandler();
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        toast.dismiss();
-        toast.error(error.response.data.message);
-      });
+  const add = () => {
+    if (!name.trim()) return toast.error("Enter a department name.");
+    toast.loading("Adding…");
+    axios.post(`${baseApiURL()}/branch/addBranch`, { name }, { headers: { "Content-Type": "application/json" } })
+      .then(r => { toast.dismiss(); if (r.data.success) { toast.success(r.data.message); setName(""); fetch(); setTab("view"); } else toast.error(r.data.message); })
+      .catch(err => { toast.dismiss(); toast.error(err.response?.data?.message || "Error"); });
   };
 
-  const deleteBranchHandler = (id) => {
-    const alert = prompt("Are You Sure? Type CONFIRM to continue");
-    if (alert === "CONFIRM") {
-      toast.loading("Deleting Branch");
-      const headers = {
-        "Content-Type": "application/json",
-      };
-      axios
-        .delete(`${baseApiURL()}/branch/deleteBranch/${id}`, {
-          headers: headers,
-        })
-        .then((response) => {
-          toast.dismiss();
-          if (response.data.success) {
-            toast.success(response.data.message);
-            getBranchHandler();
-          } else {
-            toast.error(response.data.message);
-          }
-        })
-        .catch((error) => {
-          toast.dismiss();
-          toast.error(error.response.data.message);
-        });
-    }
+  const remove = id => {
+    toast.loading("Deleting…");
+    axios.delete(`${baseApiURL()}/branch/deleteBranch/${id}`, { headers: { "Content-Type": "application/json" } })
+      .then(r => { toast.dismiss(); if (r.data.success) { toast.success(r.data.message); fetch(); } else toast.error(r.data.message); })
+      .catch(err => { toast.dismiss(); toast.error(err.response?.data?.message || "Error"); });
+    setConfirmId(null);
   };
+
   return (
-    <div className="w-full mx-auto mt-10 flex justify-center items-start flex-col mb-10">
-      <div className="flex justify-between items-center w-full">
-        <Heading title="Add Department" />
-        <div className="flex justify-end items-center w-full">
-          <button
-            className={`${
-              selected === "add" && "border-b-2 "
-            }border-blue-500 px-4 py-2 text-black rounded-sm mr-6`}
-            onClick={() => setSelected("add")}
-          >
-            Add Department
-          </button>
-          <button
-            className={`${
-              selected === "view" && "border-b-2 "
-            }border-blue-500 px-4 py-2 text-black rounded-sm`}
-            onClick={() => setSelected("view")}
-          >
-            View Department
-          </button>
-        </div>
+    <>
+      <div className="tab-row">
+        <button className={`tab ${tab === "add" ? "active" : ""}`} onClick={() => setTab("add")}>+ Add Department</button>
+        <button className={`tab ${tab === "view" ? "active" : ""}`} onClick={() => setTab("view")}>View ({branches.length})</button>
       </div>
-      {selected === "add" && (
-        <div className="flex flex-col justify-center items-center w-full mt-8">
-          <div className="w-[40%]">
-            <label htmlFor="name" className="leading-7 text-sm ">
-              Enter Department Name
-            </label>
-            <input
-              type="name"
-              id="name"
-              value={data.name}
-              onChange={(e) => setData({ ...data, name: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
+
+      {tab === "add" && (
+        <div className="card-lg" style={{ maxWidth: 460 }}>
+          <div style={{ fontFamily: "var(--font-head)", fontStyle: "italic", fontSize: 20, color: "var(--text)", marginBottom: 18 }}>
+            New Department
           </div>
-          <button
-            className="mt-6 bg-blue-500 px-6 py-3 text-white"
-            onClick={addBranchHandler}
-          >
-            Add Department
-          </button>
+          <div className="field" style={{ marginBottom: 16 }}>
+            <div className="field-lbl">Department Name</div>
+            <input className="field-inp" placeholder="e.g. Computer Science"
+              value={name} onChange={e => setName(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && add()} />
+          </div>
+          <button className="btn btn-primary" onClick={add}>Add Department</button>
         </div>
       )}
-      {selected === "view" && (
-        <div className="mt-8 w-full">
-          <ul>
-            {branch &&
-              branch.map((item, index) => {
-                return (
-                  <li
-                    key={index}
-                    className="bg-blue-100 py-3 px-6 mb-3 flex justify-between items-center w-[70%]"
-                  >
-                    <div>{item.name}</div>
-                    <button
-                      className="text-2xl hover:text-red-500"
-                      onClick={() => deleteBranchHandler(item._id)}
-                    >
-                      <MdOutlineDelete />
-                    </button>
-                  </li>
-                );
-              })}
-          </ul>
+
+      {tab === "view" && (
+        <div style={{ maxWidth: 600 }}>
+          {branches.length === 0
+            ? <div className="empty card"><div className="empty-icon">⬡</div><p>No departments yet.</p></div>
+            : branches.map((b, i) => (
+              <div className="list-item" key={b._id} style={{ animationDelay: `${i * 0.04}s` }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  <div style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "var(--faint)", minWidth: 24 }}>
+                    {String(i + 1).padStart(2, "0")}
+                  </div>
+                  <div style={{ fontSize: 15, fontWeight: 600, color: "var(--text)" }}>{b.name}</div>
+                </div>
+                <button className="btn btn-danger" style={{ padding: "6px 14px", fontSize: 12 }}
+                  onClick={() => setConfirmId(b._id)}>
+                  Delete
+                </button>
+              </div>
+            ))
+          }
         </div>
       )}
-    </div>
+
+      {confirmId && (
+        <div className="modal-bg">
+          <div className="modal-box">
+            <h4>Delete Department?</h4>
+            <p>This action cannot be undone. Students and faculty linked to this department may be affected.</p>
+            <div className="modal-actions">
+              <button className="btn btn-danger" onClick={() => remove(confirmId)}>Yes, Delete</button>
+              <button className="btn btn-ghost" onClick={() => setConfirmId(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
-
 export default Branch;

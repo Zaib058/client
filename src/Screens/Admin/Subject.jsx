@@ -1,167 +1,99 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
-import Heading from "../../components/Heading";
-import { MdOutlineDelete } from "react-icons/md";
 import { baseApiURL } from "../../baseUrl";
-const Subjects = () => {
-  const [data, setData] = useState({
-    name: "",
-    code: "",
-  });
-  const [selected, setSelected] = useState("add");
-  const [subject, setSubject] = useState();
-  useEffect(() => {
-    getSubjectHandler();
-  }, []);
 
-  const getSubjectHandler = () => {
-    axios
-      .get(`${baseApiURL()}/subject/getSubject`)
-      .then((response) => {
-        if (response.data.success) {
-          setSubject(response.data.subject);
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
+const Subject = () => {
+  const [form, setForm] = useState({ name: "", code: "" });
+  const [tab, setTab] = useState("add");
+  const [subjects, setSubjects] = useState([]);
+  const [confirmId, setConfirmId] = useState(null);
+  const [confirmName, setConfirmName] = useState("");
+
+  useEffect(() => { fetch(); }, []);
+
+  const fetch = () => {
+    axios.get(`${baseApiURL()}/subject/getSubject`)
+      .then(r => { if (r.data.success) setSubjects(r.data.subject); })
+      .catch(err => toast.error(err.message));
   };
 
-  const addSubjectHandler = () => {
-    toast.loading("Adding Subject");
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    axios
-      .post(`${baseApiURL()}/subject/addSubject`, data, {
-        headers: headers,
-      })
-      .then((response) => {
-        toast.dismiss();
-        if (response.data.success) {
-          toast.success(response.data.message);
-          setData({ name: "", code: "" });
-          getSubjectHandler();
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        toast.dismiss();
-        toast.error(error.response.data.message);
-      });
+  const add = () => {
+    if (!form.name.trim() || !form.code) return toast.error("Both subject code and name are required.");
+    toast.loading("Adding…");
+    axios.post(`${baseApiURL()}/subject/addSubject`, form, { headers: { "Content-Type": "application/json" } })
+      .then(r => { toast.dismiss(); if (r.data.success) { toast.success(r.data.message); setForm({ name: "", code: "" }); fetch(); setTab("view"); } else toast.error(r.data.message); })
+      .catch(err => { toast.dismiss(); toast.error(err.response?.data?.message || "Error"); });
   };
 
-  const deleteSubjectHandler = (id) => {
-    toast.loading("Deleting Subject");
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    axios
-      .delete(`${baseApiURL()}/subject/deleteSubject/${id}`, {
-        headers: headers,
-      })
-      .then((response) => {
-        toast.dismiss();
-        if (response.data.success) {
-          toast.success(response.data.message);
-          getSubjectHandler();
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        toast.dismiss();
-        toast.error(error.response.data.message);
-      });
+  const remove = id => {
+    toast.loading("Deleting…");
+    axios.delete(`${baseApiURL()}/subject/deleteSubject/${id}`, { headers: { "Content-Type": "application/json" } })
+      .then(r => { toast.dismiss(); if (r.data.success) { toast.success(r.data.message); fetch(); } else toast.error(r.data.message); })
+      .catch(err => { toast.dismiss(); toast.error(err.response?.data?.message || "Error"); });
+    setConfirmId(null);
   };
+
   return (
-    <div className="w-full mx-auto mt-10 flex justify-center items-start flex-col mb-10">
-      <div className="flex justify-between items-center w-full">
-        <Heading title="Add Subject" />
-        <div className="flex justify-end items-center w-full">
-          <button
-            className={`${
-              selected === "add" && "border-b-2 "
-            }border-blue-500 px-4 py-2 text-black rounded-sm mr-6`}
-            onClick={() => setSelected("add")}
-          >
-            Add Subject
-          </button>
-          <button
-            className={`${
-              selected === "view" && "border-b-2 "
-            }border-blue-500 px-4 py-2 text-black rounded-sm`}
-            onClick={() => setSelected("view")}
-          >
-            View Subject
-          </button>
-        </div>
+    <>
+      <div className="tab-row">
+        <button className={`tab ${tab === "add" ? "active" : ""}`} onClick={() => setTab("add")}>+ Add Subject</button>
+        <button className={`tab ${tab === "view" ? "active" : ""}`} onClick={() => setTab("view")}>View ({subjects.length})</button>
       </div>
-      {selected === "add" && (
-        <div className="flex flex-col justify-center items-center w-full mt-8">
-          <div className="w-[40%] mb-4">
-            <label htmlFor="code" className="leading-7 text-sm">
-              Enter Subject Code
-            </label>
-            <input
-              type="number"
-              id="code"
-              value={data.code}
-              onChange={(e) => setData({ ...data, code: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
+
+      {tab === "add" && (
+        <div className="card-lg" style={{ maxWidth: 480 }}>
+          <div style={{ fontFamily: "var(--font-head)", fontStyle: "italic", fontSize: 20, color: "var(--text)", marginBottom: 18 }}>New Subject</div>
+          <div style={{ display: "grid", gridTemplateColumns: "120px 1fr", gap: 14, marginBottom: 16 }}>
+            <div className="field">
+              <div className="field-lbl">Code</div>
+              <input className="field-inp" type="number" placeholder="101"
+                value={form.code} onChange={e => setForm(p => ({ ...p, code: e.target.value }))} />
+            </div>
+            <div className="field">
+              <div className="field-lbl">Subject Name</div>
+              <input className="field-inp" placeholder="e.g. Mathematics"
+                value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))}
+                onKeyDown={e => e.key === "Enter" && add()} />
+            </div>
           </div>
-          <div className="w-[40%]">
-            <label htmlFor="name" className="leading-7 text-sm ">
-              Enter Subject Name
-            </label>
-            <input
-              type="name"
-              id="name"
-              value={data.name}
-              onChange={(e) => setData({ ...data, name: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <button
-            className="mt-6 bg-blue-500 px-6 py-3 text-white"
-            onClick={addSubjectHandler}
-          >
-            Add Subject
-          </button>
+          <button className="btn btn-primary" onClick={add}>Add Subject</button>
         </div>
       )}
-      {selected === "view" && (
-        <div className="mt-8 w-full">
-          <ul>
-            {subject &&
-              subject.map((item) => {
-                return (
-                  <li
-                    key={item.code}
-                    className="bg-blue-100 py-3 px-6 mb-3 flex justify-between items-center w-[70%]"
-                  >
-                    <div>
-                      {item.code} - {item.name}
-                    </div>
-                    <button
-                      className="text-2xl hover:text-red-500"
-                      onClick={() => deleteSubjectHandler(item._id)}
-                    >
-                      <MdOutlineDelete />
-                    </button>
-                  </li>
-                );
-              })}
-          </ul>
+
+      {tab === "view" && (
+        <div style={{ maxWidth: 600 }}>
+          {subjects.length === 0
+            ? <div className="empty card"><div className="empty-icon">⊞</div><p>No subjects yet.</p></div>
+            : subjects.map((s, i) => (
+              <div className="list-item" key={s._id}>
+                <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                  <span className="list-code" style={{ background: "rgba(99,102,241,.12)", border: "1px solid rgba(99,102,241,.22)", color: "#a5b4fc" }}>{s.code}</span>
+                  <span style={{ fontSize: 15, fontWeight: 600, color: "var(--text)" }}>{s.name}</span>
+                </div>
+                <button className="btn btn-danger" style={{ padding: "6px 14px", fontSize: 12 }}
+                  onClick={() => { setConfirmId(s._id); setConfirmName(s.name); }}>
+                  Delete
+                </button>
+              </div>
+            ))
+          }
         </div>
       )}
-    </div>
+
+      {confirmId && (
+        <div className="modal-bg">
+          <div className="modal-box">
+            <h4>Delete Subject?</h4>
+            <p>"{confirmName}" will be removed. Existing marks for this subject may be affected.</p>
+            <div className="modal-actions">
+              <button className="btn btn-danger" onClick={() => remove(confirmId)}>Yes, Delete</button>
+              <button className="btn btn-ghost" onClick={() => setConfirmId(null)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
-
-export default Subjects;
+export default Subject;

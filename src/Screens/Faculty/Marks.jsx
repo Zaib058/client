@@ -1,278 +1,97 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import Heading from "../../components/Heading";
 import toast from "react-hot-toast";
-import { BiArrowBack } from "react-icons/bi";
 import { baseApiURL } from "../../baseUrl";
 
 const Marks = () => {
-  const [subject, setSubject] = useState();
-  const [branch, setBranch] = useState();
-  const [studentData, setStudentData] = useState();
-  const [selected, setSelected] = useState({
-    branch: "",
-    semester: "",
-    subject: "",
-    examType: "",
-  });
-  const loadStudentDetails = () => {
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    axios
-      .post(
-        `${baseApiURL()}/student/details/getDetails`,
-        { branch: selected.branch, semester: selected.semester },
-        { headers }
-      )
-      .then((response) => {
-        if (response.data.success) {
-          setStudentData(response.data.user);
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error(error.message);
-      });
-  };
-
-  const submitMarksHandler = () => {
-    let container = document.getElementById("markContainer");
-    container.childNodes.forEach((enroll) => {
-      setStudentMarksHandler(
-        enroll.id,
-        document.getElementById(enroll.id + "marks").value
-      );
-    });
-  };
-
-  const setStudentMarksHandler = (enrollment, value) => {
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    axios
-      .post(
-        `${baseApiURL()}/marks/addMarks`,
-        {
-          enrollmentNo: enrollment,
-          [selected.examType]: {
-            [selected.subject]: value,
-          },
-        },
-        { headers }
-      )
-      .then((response) => {
-        if (response.data.success) {
-          toast.dismiss();
-          toast.success(response.data.message);
-        } else {
-          toast.dismiss();
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error(error.message);
-      });
-  };
-
-  const getBranchData = () => {
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    axios
-      .get(`${baseApiURL()}/branch/getBranch`, { headers })
-      .then((response) => {
-        if (response.data.success) {
-          setBranch(response.data.branches);
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-        toast.error(error.message);
-      });
-  };
-
-  const getSubjectData = () => {
-    toast.loading("Loading Subjects");
-    axios
-      .get(`${baseApiURL()}/subject/getSubject`)
-      .then((response) => {
-        toast.dismiss();
-        if (response.data.success) {
-          setSubject(response.data.subject);
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        toast.dismiss();
-        toast.error(error.message);
-      });
-  };
+  const [branch, setBranch] = useState([]);
+  const [subject, setSubject] = useState([]);
+  const [students, setStudents] = useState(null);
+  const [marks, setMarks] = useState({});
+  const [sel, setSel] = useState({ branch: "", semester: "", subject: "", examType: "" });
 
   useEffect(() => {
-    getBranchData();
-    getSubjectData();
+    axios.get(`${baseApiURL()}/branch/getBranch`).then(r => r.data.success && setBranch(r.data.branches)).catch(() => {});
+    axios.get(`${baseApiURL()}/subject/getSubject`).then(r => r.data.success && setSubject(r.data.subject)).catch(() => {});
   }, []);
 
-  const resetValueHandler = () => {
-    setStudentData();
+  const loadStudents = () => {
+    if (!sel.branch || !sel.semester || !sel.subject || !sel.examType)
+      return toast.error("Please fill all filters before loading students.");
+    toast.loading("Loading students…");
+    axios.post(`${baseApiURL()}/student/details/getDetails`,
+      { branch: sel.branch, semester: sel.semester }, { headers: { "Content-Type": "application/json" } })
+      .then(r => { toast.dismiss(); if (r.data.success) { setStudents(r.data.user); setMarks({}); } else toast.error(r.data.message); })
+      .catch(err => { toast.dismiss(); toast.error(err.message); });
+  };
+
+  const submit = async () => {
+    if (!students?.length) return;
+    toast.loading("Uploading marks…");
+    try {
+      await Promise.all(students.map(s =>
+        axios.post(`${baseApiURL()}/marks/addMarks`,
+          { enrollmentNo: s.enrollmentNo, [sel.examType]: { [sel.subject]: marks[s.enrollmentNo] || 0 } },
+          { headers: { "Content-Type": "application/json" } })
+      ));
+      toast.dismiss(); toast.success("All marks uploaded!");
+    } catch { toast.dismiss(); toast.error("Some marks failed to upload."); }
   };
 
   return (
-    <div className="w-full mx-auto flex justify-center items-start flex-col my-10">
-      <div className="relative flex justify-between items-center w-full">
-        <Heading title={`Upload Marks`} />
-        {studentData && (
-          <button
-            className="absolute right-2 flex justify-center items-center border-2 border-red-500 px-3 py-2 rounded text-red-500"
-            onClick={resetValueHandler}
-          >
-            <span className="mr-2">
-              <BiArrowBack className="text-red-500" />
-            </span>
-            Close
-          </button>
-        )}
-      </div>
-      {!studentData && (
-        <>
-          <div className="mt-10 w-full flex justify-evenly items-center gap-x-6">
-            <div className="w-full">
-              <label htmlFor="branch" className="leading-7 text-base ">
-                Select Department
-              </label>
-              <select
-                id="branch"
-                className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full accent-blue-700 mt-1"
-                value={selected.branch}
-                onChange={(e) =>
-                  setSelected({ ...selected, branch: e.target.value })
-                }
-              >
-                <option defaultValue>-- Select --</option>
-                {branch &&
-                  branch.map((branch) => {
-                    return (
-                      <option value={branch.name} key={branch.name}>
-                        {branch.name}
-                      </option>
-                    );
-                  })}
-              </select>
-            </div>
-            <div className="w-full">
-              <label htmlFor="semester" className="leading-7 text-base ">
-                Select Class
-              </label>
-              <select
-                id="semester"
-                className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full accent-blue-700 mt-1"
-                value={selected.semester}
-                onChange={(e) =>
-                  setSelected({ ...selected, semester: e.target.value })
-                }
-              >
-                <option defaultValue>-- Select --</option>
-                <option value="1">1st Year</option>
-                <option value="2">2nd Year</option>
-                
-              </select>
-            </div>
-            <div className="w-full">
-              <label htmlFor="subject" className="leading-7 text-base ">
-                Select Subject
-              </label>
-              <select
-                id="subject"
-                className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full accent-blue-700 mt-1"
-                value={selected.subject}
-                onChange={(e) =>
-                  setSelected({ ...selected, subject: e.target.value })
-                }
-              >
-                <option defaultValue>-- Select --</option>
-                {subject &&
-                  subject.map((subject) => {
-                    return (
-                      <option value={subject.name} key={subject.name}>
-                        {subject.name}
-                      </option>
-                    );
-                  })}
-              </select>
-            </div>
-            <div className="w-full">
-              <label htmlFor="examType" className="leading-7 text-base ">
-                Select Exam Type
-              </label>
-              <select
-                id="examType"
-                className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full accent-blue-700 mt-1"
-                value={selected.examType}
-                onChange={(e) =>
-                  setSelected({ ...selected, examType: e.target.value })
-                }
-              >
-                <option defaultValue>-- Select --</option>
-                <option value="internal">Daily Test</option>
-                <option value="external">Check Point</option>
-              </select>
-            </div>
+    <>
+      {!students && (
+        <div className="filter-card">
+          <div className="filter-title">Filter Students</div>
+          <div className="filter-grid">
+            {[
+              { lbl: "Department", key: "branch", opts: branch.map(b => ({ v: b.name, l: b.name })) },
+              { lbl: "Year / Class", key: "semester", opts: [{ v: "1", l: "1st Year" }, { v: "2", l: "2nd Year" }] },
+              { lbl: "Subject", key: "subject", opts: subject.map(s => ({ v: s.name, l: s.name })) },
+              { lbl: "Exam Type", key: "examType", opts: [{ v: "internal", l: "Daily Test" }, { v: "external", l: "Check Point" }] },
+            ].map(f => (
+              <div className="field" key={f.key}>
+                <div className="field-lbl">{f.lbl}</div>
+                <select className="field-sel" value={sel[f.key]} onChange={e => setSel(p => ({ ...p, [f.key]: e.target.value }))}>
+                  <option value="">Select…</option>
+                  {f.opts.map(o => <option key={o.v} value={o.v}>{o.l}</option>)}
+                </select>
+              </div>
+            ))}
           </div>
-          <button
-            className="bg-blue-50 px-4 py-2 mt-8 mx-auto rounded border-2 border-blue-500 text-black"
-            onClick={loadStudentDetails}
-          >
-            Load Student Data
-          </button>
+          <button className="btn btn-primary" style={{ marginTop: 18 }} onClick={loadStudents}>Load Students →</button>
+        </div>
+      )}
+
+      {students && (
+        <>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 18 }}>
+            <div style={{ fontFamily: "var(--font-head)", fontStyle: "italic", fontSize: 20, color: "var(--text)" }}>
+              {sel.examType === "internal" ? "Daily Test" : "Check Point"} — {sel.subject}, {sel.branch} Yr {sel.semester}
+            </div>
+            <button className="btn btn-ghost" onClick={() => setStudents(null)}>← Change Filters</button>
+          </div>
+
+          {students.length === 0 ? (
+            <div className="empty card"><div className="empty-icon">⚑</div><p>No students found.</p></div>
+          ) : (
+            <>
+              <div className="marks-entry">
+                {students.map(s => (
+                  <div className="entry-row" key={s.enrollmentNo}>
+                    <div className="entry-enroll">{s.enrollmentNo}</div>
+                    <input className="entry-inp" type="number" placeholder="Marks"
+                      value={marks[s.enrollmentNo] || ""}
+                      onChange={e => setMarks(p => ({ ...p, [s.enrollmentNo]: e.target.value }))} />
+                  </div>
+                ))}
+              </div>
+              <button className="btn btn-primary btn-full" onClick={submit}>✓ Upload All Marks</button>
+            </>
+          )}
         </>
       )}
-      {studentData && studentData.length !== 0 && (
-        <>
-          <p className="mt-4 text-lg">
-            Upload {selected.examType} Marks Of {selected.branch} Class{" "}
-            {selected.semester} of {selected.subject}
-          </p>
-          <div
-            className="w-full flex flex-wrap justify-center items-center mt-8 gap-4"
-            id="markContainer"
-          >
-            {studentData.map((student) => {
-              return (
-                <div
-                  key={student.enrollmentNo}
-                  className="w-[30%] flex justify-between items-center border-2 border-blue-500 rounded"
-                  id={student.enrollmentNo}
-                >
-                  <p className="text-lg px-4 w-1/2 bg-blue-50">
-                    {student.enrollmentNo}
-                  </p>
-                  <input
-                    type="number"
-                    className="px-6 py-2 focus:ring-0 outline-none w-1/2"
-                    placeholder="Enter Marks"
-                    id={`${student.enrollmentNo}marks`}
-                  />
-                </div>
-              );
-            })}
-          </div>
-          <button
-            className="bg-blue-500 px-6 py-3 mt-8 mx-auto rounded text-white"
-            onClick={submitMarksHandler}
-          >
-            Upload Student Marks
-          </button>
-        </>
-      )}
-    </div>
+    </>
   );
 };
-
 export default Marks;

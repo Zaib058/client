@@ -2,363 +2,181 @@ import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { baseApiURL } from "../../../baseUrl";
-import { FiSearch, FiUpload, FiX } from "react-icons/fi";
+
 const EditStudent = () => {
-  const [file, setFile] = useState();
-  const [branch, setBranch] = useState();
-  const [search, setSearch] = useState();
-  const [searchActive, setSearchActive] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [data, setData] = useState({
-    enrollmentNo: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    semester: "",
-    branch: "",
-    gender: "",
-    profile: "",
+  const [search, setSearch] = useState("");
+  const [found, setFound] = useState(false);
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState("");
+  const [id, setId] = useState("");
+  const [branches, setBranches] = useState([]);
+  const [d, setD] = useState({
+    enrollmentNo: "", firstName: "", middleName: "", lastName: "",
+    email: "", phoneNumber: "", semester: "", branch: "", gender: "", profile: "",
   });
-  const [id, setId] = useState();
-  const getBranchData = () => {
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    axios
-      .get(`${baseApiURL()}/branch/getBranch`, { headers })
-      .then((response) => {
-        if (response.data.success) {
-          setBranch(response.data.branches);
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
 
   useEffect(() => {
-    getBranchData();
+    axios.get(`${baseApiURL()}/branch/getBranch`)
+      .then(r => r.data.success && setBranches(r.data.branches))
+      .catch(() => {});
   }, []);
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-    const imageUrl = URL.createObjectURL(selectedFile);
-    setPreviewImage(imageUrl);
+  const handleFile = e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    setFile(f);
+    setPreview(URL.createObjectURL(f));
   };
 
-  const updateStudentProfile = (e) => {
+  const doSearch = e => {
     e.preventDefault();
-    toast.loading("Updating Student");
-    const formData = new FormData();
-    formData.append("enrollmentNo", data.enrollmentNo);
-    formData.append("firstName", data.firstName);
-    formData.append("middleName", data.middleName);
-    formData.append("lastName", data.lastName);
-    formData.append("email", data.email);
-    formData.append("phoneNumber", data.phoneNumber);
-    formData.append("semester", data.semester);
-    formData.append("branch", data.branch);
-    formData.append("gender", data.gender);
-    if (file) {
-      formData.append("type", "profile");
-      formData.append("profile", file);
-    }
-    const headers = {
-      "Content-Type": "multipart/form-data",
-    };
-    axios
-      .put(`${baseApiURL()}/student/details/updateDetails/${id}`, formData, {
-        headers: headers,
-      })
-      .then((response) => {
+    if (!search.trim()) return toast.error("Enter an enrollment number.");
+    toast.loading("Searching…");
+    axios.post(`${baseApiURL()}/student/details/getDetails`,
+      { enrollmentNo: search }, { headers: { "Content-Type": "application/json" } })
+      .then(r => {
         toast.dismiss();
-        if (response.data.success) {
-          toast.success(response.data.message);
-          clearSearchHandler();
+        if (r.data.success && r.data.user.length > 0) {
+          const u = r.data.user[0];
+          setId(u._id);
+          setFound(true);
+          toast.success("Student found!");
+          setD({
+            enrollmentNo: u.enrollmentNo, firstName: u.firstName,
+            middleName: u.middleName || "", lastName: u.lastName,
+            email: u.email, phoneNumber: u.phoneNumber,
+            semester: u.semester, branch: u.branch,
+            gender: u.gender, profile: u.profile,
+          });
         } else {
-          toast.error(response.data.message);
+          toast.error("No student found.");
         }
       })
-      .catch((error) => {
-        toast.dismiss();
-        toast.error(error.response.data.message);
-      });
+      .catch(err => { toast.dismiss(); toast.error(err.response?.data?.message || "Error"); });
   };
 
-  const searchStudentHandler = (e) => {
-    setSearchActive(true);
+  const clear = () => {
+    setSearch(""); setFound(false); setFile(null); setPreview(""); setId("");
+    setD({ enrollmentNo: "", firstName: "", middleName: "", lastName: "", email: "", phoneNumber: "", semester: "", branch: "", gender: "", profile: "" });
+  };
+
+  const submit = e => {
     e.preventDefault();
-    toast.loading("Getting Student");
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    axios
-      .post(
-        `${baseApiURL()}/student/details/getDetails`,
-        { enrollmentNo: search },
-        { headers }
-      )
-      .then((response) => {
+    toast.loading("Updating…");
+    const fd = new FormData();
+    Object.entries(d).forEach(([k, v]) => { if (v) fd.append(k, v); });
+    if (file) { fd.append("type", "profile"); fd.append("profile", file); }
+    axios.put(`${baseApiURL()}/student/details/updateDetails/${id}`, fd,
+      { headers: { "Content-Type": "multipart/form-data" } })
+      .then(r => {
         toast.dismiss();
-        if (response.data.success) {
-          if (response.data.user.length === 0) {
-            toast.error("No Student Found!");
-          } else {
-            toast.success(response.data.message);
-            setData({
-              enrollmentNo: response.data.user[0].enrollmentNo,
-              firstName: response.data.user[0].firstName,
-              middleName: response.data.user[0].middleName,
-              lastName: response.data.user[0].lastName,
-              email: response.data.user[0].email,
-              phoneNumber: response.data.user[0].phoneNumber,
-              semester: response.data.user[0].semester,
-              branch: response.data.user[0].branch,
-              gender: response.data.user[0].gender,
-              profile: response.data.user[0].profile,
-            });
-            setId(response.data.user[0]._id);
-          }
-        } else {
-          if (response?.data) toast.error(response.data.message);
-          toast.error(response.data.message);
-        }
+        if (r.data.success) { toast.success("Updated!"); clear(); }
+        else toast.error(r.data.message);
       })
-      .catch((error) => {
-        toast.dismiss();
-        if (error?.response?.data) toast.error(error.response.data.message);
-        console.error(error);
-      });
-  };
-
-  const clearSearchHandler = () => {
-    setSearchActive(false);
-    setSearch("");
-    setId("");
-    setPreviewImage("");
-    setData({
-      enrollmentNo: "",
-      firstName: "",
-      middleName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-      semester: "",
-      branch: "",
-      gender: "",
-    });
+      .catch(err => { toast.dismiss(); toast.error(err.response?.data?.message || "Error"); });
   };
 
   return (
-    <div className="my-6 mx-auto w-full">
-      <form
-        className="flex justify-center items-center border-2 border-blue-500 rounded w-[40%] mx-auto"
-        onSubmit={searchStudentHandler}
-      >
-        <input
-          type="text"
-          className="px-6 py-3 w-full outline-none"
-          placeholder="Enrollment No."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        {!searchActive && (
-          <button className="px-4 text-2xl hover:text-blue-500" type="submit">
-            <FiSearch />
-          </button>
-        )}
-        {searchActive && (
-          <button
-            className="px-4 text-2xl hover:text-blue-500"
-            onClick={clearSearchHandler}
-          >
-            <FiX />
-          </button>
-        )}
+    <>
+      <form className="search-bar" onSubmit={doSearch} style={{ marginBottom: 18 }}>
+        <input className="search-inp" placeholder="Search by Enrollment Number…"
+          value={search} onChange={e => setSearch(e.target.value)} />
+        {found
+          ? <button type="button" className="search-btn" onClick={clear}>✕</button>
+          : <button type="submit" className="search-btn">⌕</button>
+        }
       </form>
-      {search && id && (
-        <form
-          onSubmit={updateStudentProfile}
-          className="w-[70%] flex justify-center items-center flex-wrap gap-6 mx-auto mt-10"
-        >
-          <div className="w-[40%]">
-            <label htmlFor="firstname" className="leading-7 text-sm ">
-              Enter First Name
-            </label>
-            <input
-              type="text"
-              id="firstname"
-              value={data.firstName}
-              onChange={(e) => setData({ ...data, firstName: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="middlename" className="leading-7 text-sm ">
-              Enter Middle Name (optional)
-            </label>
-            <input
-              type="text"
-              id="middlename"
-              value={data.middleName}
-              onChange={(e) => setData({ ...data, middleName: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="lastname" className="leading-7 text-sm ">
-              Enter Last Name
-            </label>
-            <input
-              type="text"
-              id="lastname"
-              value={data.lastName}
-              onChange={(e) => setData({ ...data, lastName: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="enrollmentNo" className="leading-7 text-sm ">
-              Enrollment No
-            </label>
-            <input
-              disabled
-              type="number"
-              id="enrollmentNo"
-              value={data.enrollmentNo}
-              onChange={(e) =>
-                setData({ ...data, enrollmentNo: e.target.value })
-              }
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="email" className="leading-7 text-sm ">
-              Enter Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={data.email}
-              onChange={(e) => setData({ ...data, email: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="phoneNumber" className="leading-7 text-sm ">
-              Enter Phone Number
-            </label>
-            <input
-              type="number"
-              id="phoneNumber"
-              value={data.phoneNumber}
-              onChange={(e) =>
-                setData({ ...data, phoneNumber: e.target.value })
-              }
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="semester" className="leading-7 text-sm ">
-              Class
-            </label>
-            <select
-              disabled
-              id="semester"
-              className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full accent-blue-700 mt-1"
-              value={data.semester}
-              onChange={(e) => setData({ ...data, semester: e.target.value })}
-            >
-              <option defaultValue>-- Select --</option>
-              <option value="1">1st Year </option>
-              <option value="2">2nd Year</option>
-              
-            </select>
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="branch" className="leading-7 text-sm ">
-             Department
-            </label>
-            <select
-              disabled
-              id="branch"
-              className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full accent-blue-700 mt-1"
-              value={data.branch}
-              onChange={(e) => setData({ ...data, branch: e.target.value })}
-            >
-              <option defaultValue>-- Select --</option>
-              {branch?.map((branch) => {
-                return (
-                  <option value={branch.name} key={branch.name}>
-                    {branch.name}
-                  </option>
-                );
-              })}
-            </select>
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="gender" className="leading-7 text-sm ">
-              Select Gender
-            </label>
-            <select
-              id="gender"
-              className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full accent-blue-700 mt-1"
-              value={data.gender}
-              onChange={(e) => setData({ ...data, gender: e.target.value })}
-            >
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="file" className="leading-7 text-sm ">
-              Select New Profile
-            </label>
-            <label
-              htmlFor="file"
-              className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full flex justify-center items-center cursor-pointer"
-            >
-              Upload
-              <span className="ml-2">
-                <FiUpload />
-              </span>
-            </label>
-            <input
-              hidden
-              type="file"
-              id="file"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-          </div>
-          {previewImage && (
-            <div className="w-full flex justify-center items-center">
-              <img src={previewImage} alt="student" className="h-36" />
+
+      {found && (
+        <div className="found-banner">
+          ✓ Editing: <strong>{d.firstName} {d.lastName}</strong> — {d.enrollmentNo}
+        </div>
+      )}
+
+      {found && (
+        <form onSubmit={submit}>
+          <div className="form-grid">
+            <div className="section-rule">Personal Information</div>
+
+            <div className="field">
+              <div className="field-lbl">First Name *</div>
+              <input className="field-inp" value={d.firstName}
+                onChange={e => setD(p => ({ ...p, firstName: e.target.value }))} required />
             </div>
-          )}
-          {!previewImage && data.profile && (
-            <div className="w-full flex justify-center items-center">
-              <img
-                src={process.env.REACT_APP_MEDIA_LINK + "/" + data.profile}
-                alt="student"
-                className="h-36"
-              />
+            <div className="field">
+              <div className="field-lbl">Middle Name</div>
+              <input className="field-inp" value={d.middleName}
+                onChange={e => setD(p => ({ ...p, middleName: e.target.value }))} />
             </div>
-          )}
-          <button
-            type="submit"
-            className="bg-blue-500 px-6 py-3 rounded-sm mb-6 text-white"
-          >
-            Update Student
-          </button>
+            <div className="field">
+              <div className="field-lbl">Last Name *</div>
+              <input className="field-inp" value={d.lastName}
+                onChange={e => setD(p => ({ ...p, lastName: e.target.value }))} required />
+            </div>
+
+            {/* Gender values capitalized to match Mongoose enum: "Male" / "Female" */}
+            <div className="field">
+              <div className="field-lbl">Gender</div>
+              <select className="field-sel" value={d.gender}
+                onChange={e => setD(p => ({ ...p, gender: e.target.value }))}>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div className="section-rule">Academic (read-only)</div>
+
+            <div className="field">
+              <div className="field-lbl">Enrollment No</div>
+              <input className="field-inp" value={d.enrollmentNo} disabled />
+            </div>
+            <div className="field">
+              <div className="field-lbl">Department</div>
+              <input className="field-inp" value={d.branch} disabled />
+            </div>
+            <div className="field">
+              <div className="field-lbl">Year</div>
+              <input className="field-inp" value={`Year ${d.semester}`} disabled />
+            </div>
+
+            <div className="section-rule">Contact</div>
+
+            <div className="field">
+              <div className="field-lbl">Email</div>
+              <input className="field-inp" type="email" value={d.email}
+                onChange={e => setD(p => ({ ...p, email: e.target.value }))} />
+            </div>
+            <div className="field">
+              <div className="field-lbl">Phone</div>
+              <input className="field-inp" type="number" value={d.phoneNumber}
+                onChange={e => setD(p => ({ ...p, phoneNumber: e.target.value }))} />
+            </div>
+
+            <div className="section-rule">Profile Photo</div>
+
+            <div className="field span2">
+              <label className="upload-zone" htmlFor="edit-student-photo">
+                <div style={{ fontSize: 26 }}>📷</div>
+                <p>{file ? file.name : "Click to change photo"}</p>
+              </label>
+              <input type="file" id="edit-student-photo" accept="image/*"
+                style={{ display: "none" }} onChange={handleFile} />
+              {(preview || d.profile) && (
+                <div className="preview-strip">
+                  <img src={preview || process.env.REACT_APP_MEDIA_LINK + "/" + d.profile} alt="Preview" />
+                  <p>{preview ? "New photo selected" : "Current photo"}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="field span2">
+              <button type="submit" className="btn btn-primary btn-full">✓ Update Student</button>
+            </div>
+          </div>
         </form>
       )}
-    </div>
+    </>
   );
 };
 

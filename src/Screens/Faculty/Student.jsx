@@ -1,139 +1,56 @@
+// Faculty/Student.jsx
 import React, { useState } from "react";
 import toast from "react-hot-toast";
-import Heading from "../../components/Heading";
 import axios from "axios";
 import { baseApiURL } from "../../baseUrl";
-import { FiSearch } from "react-icons/fi";
-const Student = () => {
-  const [search, setSearch] = useState();
-  const [data, setData] = useState({
-    enrollmentNo: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    semester: "",
-    branch: "",
-    gender: "",
-    profile: "",
-  });
-  const [id, setId] = useState();
 
-  const searchStudentHandler = (e) => {
-    setId("");
-    setData({
-      enrollmentNo: "",
-      firstName: "",
-      middleName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-      semester: "",
-      branch: "",
-      gender: "",
-      profile: "",
-    });
+const Student = () => {
+  const [search, setSearch] = useState("");
+  const [data, setData] = useState(null);
+
+  const searchStudent = e => {
     e.preventDefault();
-    toast.loading("Getting Student");
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    axios
-      .post(
-        `${baseApiURL()}/student/details/getDetails`,
-        { enrollmentNo: search },
-        { headers }
-      )
-      .then((response) => {
+    if (!search.trim()) return toast.error("Enter an enrollment number");
+    toast.loading("Searching…");
+    axios.post(`${baseApiURL()}/student/details/getDetails`,
+      { enrollmentNo: search }, { headers: { "Content-Type": "application/json" } })
+      .then(r => {
         toast.dismiss();
-        if (response.data.success) {
-          if (response.data.user.length === 0) {
-            toast.dismiss();
-            toast.error("No Student Found!");
-          } else {
-            toast.success(response.data.message);
-            setData({
-              enrollmentNo: response.data.user[0].enrollmentNo,
-              firstName: response.data.user[0].firstName,
-              middleName: response.data.user[0].middleName,
-              lastName: response.data.user[0].lastName,
-              email: response.data.user[0].email,
-              phoneNumber: response.data.user[0].phoneNumber,
-              semester: response.data.user[0].semester,
-              branch: response.data.user[0].branch,
-              gender: response.data.user[0].gender,
-              profile: response.data.user[0].profile,
-            });
-            setId(response.data.user[0]._id);
-          }
-        } else {
-          toast.dismiss();
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        toast.dismiss();
-        toast.error(error.response.data.message);
-        console.error(error);
-      });
+        if (r.data.success && r.data.user.length > 0) { setData(r.data.user[0]); toast.success("Student found!"); }
+        else toast.error("No student found.");
+      }).catch(err => { toast.dismiss(); toast.error(err.response?.data?.message || "Error"); });
   };
 
   return (
-    <div className="w-full mx-auto mt-10 flex justify-center items-start flex-col mb-10">
-      <div className="flex justify-between items-center w-full">
-        <Heading title="Student Details" />
-      </div>
-      <div className="my-6 mx-auto w-full">
-        <form
-          className="flex justify-center items-center border-2 border-blue-500 rounded w-[40%] mx-auto"
-          onSubmit={searchStudentHandler}
-        >
-          <input
-            type="text"
-            className="px-6 py-3 w-full outline-none"
-            placeholder="Enrollment No."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <button className="px-4 text-2xl hover:text-blue-500" type="submit">
-            <FiSearch />
-          </button>
-        </form>
-        {id && (
-          <div className="mx-auto w-full bg-blue-50 mt-10 flex justify-between items-center p-10 rounded-md shadow-md">
-            <div>
-              <p className="text-2xl font-semibold">
-                {data.firstName} {data.middleName} {data.lastName}
-              </p>
-              <div className="mt-3">
-                <p className="text-lg font-normal mb-2">
-                  Enrollment No: {data.enrollmentNo}
-                </p>
-                <p className="text-lg font-normal mb-2">
-                  Phone Number: +91 {data.phoneNumber}
-                </p>
-                <p className="text-lg font-normal mb-2">
-                  Email Address: {data.email}
-                </p>
-                <p className="text-lg font-normal mb-2">
-                  Department: {data.branch}
-                </p>
-                <p className="text-lg font-normal mb-2">
-                  Class: {data.semester}
-                </p>
-              </div>
+    <>
+      <form className="search-bar" onSubmit={searchStudent} style={{ marginBottom: 20 }}>
+        <input className="search-inp" placeholder="Search by Enrollment Number…" value={search} onChange={e => setSearch(e.target.value)} />
+        {data
+          ? <button type="button" className="search-btn" onClick={() => { setData(null); setSearch(""); }}>✕</button>
+          : <button type="submit" className="search-btn">⌕</button>}
+      </form>
+
+      {data && (
+        <div className="student-viewer fade-up">
+          <div>
+            <div style={{ fontFamily: "var(--font-head)", fontStyle: "italic", fontSize: 22, color: "var(--text)", marginBottom: 16 }}>
+              {data.firstName} {data.middleName || ""} {data.lastName}
             </div>
-            <img
-              src={process.env.REACT_APP_MEDIA_LINK + "/" + data.profile}
-              alt="student profile"
-              className="h-[200px] w-[200px] object-cover rounded-lg shadow-md"
-            />
+            <div className="info-grid">
+              <div className="info-cell"><div className="info-key">Enrollment No</div><div className="info-val">{data.enrollmentNo}</div></div>
+              <div className="info-cell"><div className="info-key">Department</div><div className="info-val">{data.branch}</div></div>
+              <div className="info-cell"><div className="info-key">Year</div><div className="info-val">Year {data.semester}</div></div>
+              <div className="info-cell"><div className="info-key">Gender</div><div className="info-val" style={{ textTransform: "capitalize" }}>{data.gender}</div></div>
+              <div className="info-cell"><div className="info-key">Phone</div><div className="info-val">+91 {data.phoneNumber}</div></div>
+              <div className="info-cell"><div className="info-key">Email</div><div className="info-val" style={{ fontSize: 12, wordBreak: "break-all" }}>{data.email}</div></div>
+            </div>
           </div>
-        )}
-      </div>
-    </div>
+          <div className="profile-avatar" style={{ width: 130, height: 130, minWidth: 130 }}>
+            {data.profile ? <img src={process.env.REACT_APP_MEDIA_LINK + "/" + data.profile} alt="Student" /> : "🎓"}
+          </div>
+        </div>
+      )}
+    </>
   );
 };
-
 export default Student;

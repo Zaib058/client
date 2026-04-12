@@ -15,17 +15,30 @@ import alumni2   from './asset/image/alumni.jpg';
 import alumni3   from './asset/image/alumni.jpg';
 import alumni4   from './asset/image/alumni4.jpg';
 import ceoImg       from "./asset/image/ceo.jpg";
-import ceoImg1       from "./asset/image/ceoimg.jpg";
+import ceoImg1      from "./asset/image/ceoimg.jpg";
 import directorImg  from "./asset/image/director.jpg";
-import principalImg from "./asset/image/principle.jpg";
+import profAqeel from "./asset/image/profAqeel.jpg";
 import founderImg   from "./asset/image/hero1.jpg";
-
-// ─── FOUNDER PHOTO ────────────────────────────────────────────────────
-// 1. Save a photo of Dr. A.Q. Khan as:  src/asset/image/aqkhan.jpg
-// 2. Uncomment the import below:
-// import aqkhanImg from "./asset/image/aqkhan.jpg";
-// 3. Change `null` to `aqkhanImg` in the line after that.
-const founderPhoto = null; // ← replace null with aqkhanImg after adding the file
+import mamFaiza   from "./asset/image/mamFaiza.jpg";
+import sirDaniyal   from "./asset/image/sirDaniyal.jpg";
+import sirSikander   from "./asset/image/sirSikander.jpg";
+import mamHafsa    from "./asset/image/mamHafsa.jpg";
+// ─── HOW TO ADD PHOTOS ────────────────────────────────────────────────────────
+//
+// FOUNDER:
+//   import aqkhanImg from "./asset/image/aqkhan.jpg";
+//   Then set founderImg to aqkhanImg below (already wired in founderImg above—
+//   just replace hero1.jpg with the real photo filename).
+//
+// BOARD OF DIRECTORS / GOVERNORS:
+//   import shireenpic from "./asset/image/shireen.jpg";
+//   Then in boardDirectors below, set photo: shireenpic  (null = show initials)
+//
+// FACULTY:
+//   import sadiaPic from "./asset/image/sadia.jpg";
+//   Then in facultyData below, set photo: sadiaPic        (null = show initials)
+//
+// ─────────────────────────────────────────────────────────────────────────────
 
 /* ─────────────────── CSS ─────────────────── */
 const css = `
@@ -34,7 +47,7 @@ const css = `
 .hm*,.hm *::before,.hm *::after{box-sizing:border-box;margin:0;padding:0;}
 .hm{font-family:'DM Sans',sans-serif;color:var(--navy);background:var(--white);}
 
-/* NAV */
+/* ── NAV ─────────────────────────────────────────────── */
 .hm-nav{position:sticky;top:0;z-index:200;background:rgba(10,25,49,.97);backdrop-filter:blur(14px);border-bottom:1px solid rgba(201,168,76,.18);}
 .hm-nav-inner{max-width:1280px;margin:0 auto;padding:0 40px;height:72px;display:flex;align-items:center;justify-content:space-between;}
 .hm-nav-links{display:flex;gap:32px;list-style:none;}
@@ -58,7 +71,7 @@ const css = `
 .hm-drawer-cta{margin-top:10px;text-align:center;background:var(--gold)!important;color:var(--navy)!important;font-weight:700!important;border-radius:100px!important;border-bottom:none!important;}
 @media(max-width:900px){.hm-nav-links,.hm-nav-cta{display:none;}.hm-burger{display:flex;}}
 
-/* HERO */
+/* ── HERO ────────────────────────────────────────────── */
 .hm-hero{position:relative;height:100vh;min-height:680px;display:flex;align-items:center;overflow:hidden;background:var(--navy);}
 .hm-hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top;opacity:.45;}
 .hm-hero-overlay{position:absolute;inset:0;background:linear-gradient(105deg,rgba(10,25,49,.95) 35%,rgba(10,25,49,.4) 100%);}
@@ -82,10 +95,10 @@ const css = `
 .hm-aside-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--white);margin-bottom:20px;}
 .hm-aside-stat{display:flex;align-items:center;gap:16px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.08);}
 .hm-aside-stat:last-child{border-bottom:none;}
-.hm-aside-num{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--gold);min-width:90px;}
+.hm-aside-num{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--gold);min-width:90px;}
 .hm-aside-lbl{font-size:13px;color:rgba(255,255,255,.6);line-height:1.4;}
 
-/* STATS */
+/* ── STATS ───────────────────────────────────────────── */
 .hm-stats{background:var(--navy);padding:60px 40px;}
 .hm-stats-grid{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:2px;}
 @media(max-width:768px){.hm-stats-grid{grid-template-columns:repeat(2,1fr);}}
@@ -95,7 +108,7 @@ const css = `
 .hm-stat-sup{font-size:.5em;vertical-align:super;}
 .hm-stat-lbl{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:10px;display:block;}
 
-/* SHARED */
+/* ── SHARED ──────────────────────────────────────────── */
 .hm-section{padding:100px 40px;}
 @media(max-width:768px){.hm-section{padding:64px 20px;}}
 .hm-container{max-width:1280px;margin:0 auto;}
@@ -113,14 +126,14 @@ const css = `
 .hm-fade{opacity:0;transform:translateY(28px);transition:opacity .65s ease,transform .65s ease;}
 .hm-fade.in{opacity:1;transform:none;}
 
-/* ORG SLIDER */
+/* ── ORG SLIDER ──────────────────────────────────────── */
 .hm-org{background:var(--navy);}
 .hm-org-tabs{display:flex;background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.2);border-radius:100px;padding:5px;width:fit-content;margin:0 auto 52px;}
-.hm-org-tab{padding:11px 28px;border-radius:100px;font-size:13px;font-weight:600;letter-spacing:.5px;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
+.hm-org-tab{padding:11px 26px;border-radius:100px;font-size:13px;font-weight:600;letter-spacing:.5px;color:rgba(255,255,255,.5);background:none;border:none;cursor:pointer;transition:all .25s;font-family:'DM Sans',sans-serif;white-space:nowrap;}
 .hm-org-tab.active{background:var(--gold);color:var(--navy);}
-@media(max-width:620px){.hm-org-tabs{flex-direction:column;border-radius:16px;width:100%;}.hm-org-tab{border-radius:12px;text-align:center;}}
+@media(max-width:700px){.hm-org-tabs{flex-direction:column;border-radius:16px;width:100%;}.hm-org-tab{border-radius:12px;text-align:center;}}
 
-/* Founder */
+/* Founder / CEO slide */
 .hm-founder-slide{display:flex;flex-direction:column;align-items:center;text-align:center;}
 .hm-founder-photo-wrap{position:relative;margin-bottom:28px;}
 .hm-founder-photo{width:160px;height:160px;border-radius:50%;object-fit:cover;object-position:top;border:4px solid var(--gold);box-shadow:0 0 0 10px rgba(201,168,76,.12),0 20px 60px rgba(0,0,0,.4);display:block;}
@@ -130,32 +143,91 @@ const css = `
 .hm-founder-role{font-size:12px;font-weight:600;letter-spacing:3px;text-transform:uppercase;color:var(--gold);margin-bottom:20px;}
 .hm-founder-desc{font-size:16px;line-height:1.9;color:rgba(255,255,255,.6);max-width:600px;margin:0 auto;}
 
-/* Board cards */
+/* ── BOARD CARDS (photo-aware) ───────────────────────── */
 .hm-board-grid{display:grid;gap:24px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));}
-.hm-board-card{background:rgba(255,255,255,.05);border:1px solid rgba(201,168,76,.18);border-radius:16px;padding:28px 20px;text-align:center;transition:transform .3s,background .3s,border-color .3s;}
-.hm-board-card:hover{transform:translateY(-6px);background:rgba(201,168,76,.07);border-color:rgba(201,168,76,.4);}
-.hm-board-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#0d2550);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-family:'Playfair Display',serif;font-size:22px;font-weight:700;color:var(--gold);}
+.hm-board-card{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(201,168,76,.18);
+  border-radius:20px;
+  overflow:hidden;
+  text-align:center;
+  transition:transform .3s,background .3s,border-color .3s;
+}
+.hm-board-card:hover{transform:translateY(-7px);background:rgba(201,168,76,.07);border-color:rgba(201,168,76,.4);}
+
+/* photo version */
+.hm-board-img-wrap{
+  width:100%; height:180px;
+  overflow:hidden; position:relative;
+  background:linear-gradient(135deg,var(--blue),#0d2550);
+}
+.hm-board-img-wrap img{
+  width:100%; height:100%;
+  object-fit:cover; object-position:top;
+  display:block;
+  transition:transform .5s;
+}
+.hm-board-card:hover .hm-board-img-wrap img{transform:scale(1.06);}
+.hm-board-img-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 50%,rgba(10,25,49,.6) 100%);
+}
+
+/* initials version */
+.hm-board-avatar-wrap{
+  width:100%; height:180px;
+  background:linear-gradient(135deg,var(--blue),#0d2550);
+  display:flex; align-items:center; justify-content:center;
+}
+.hm-board-avatar{
+  width:80px; height:80px; border-radius:50%;
+  background:rgba(255,255,255,.08);
+  border:2px solid var(--gold);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Playfair Display',serif;
+  font-size:26px; font-weight:700; color:var(--gold);
+}
+
+/* shared card body */
+.hm-board-body{padding:18px 16px 20px;}
 .hm-board-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:700;color:var(--white);margin-bottom:6px;}
 .hm-board-title{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);}
 
-/* FACULTY GRID */
+/* ── FACULTY GRID ────────────────────────────────────── */
 .hm-faculty-section{background:var(--light);}
 .hm-faculty-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:22px;margin-top:56px;}
 @media(max-width:480px){.hm-faculty-grid{grid-template-columns:1fr 1fr;gap:12px;}}
+
 .hm-fac-card{background:var(--white);border-radius:18px;overflow:hidden;box-shadow:0 4px 24px rgba(10,25,49,.07);transition:transform .3s,box-shadow .3s;text-decoration:none;display:block;cursor:pointer;}
 .hm-fac-card:hover{transform:translateY(-7px);box-shadow:0 20px 60px rgba(10,25,49,.14);}
+
+/* faculty card — photo strip */
+.hm-fac-photo-strip{width:100%;height:140px;overflow:hidden;position:relative;background:linear-gradient(135deg,var(--navy),var(--blue));}
+.hm-fac-photo-strip img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .5s;}
+.hm-fac-card:hover .hm-fac-photo-strip img{transform:scale(1.07);}
+.hm-fac-photo-strip-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(10,25,49,.55) 100%);}
+
+/* faculty card — initials head */
 .hm-fac-head{background:linear-gradient(135deg,var(--navy),var(--blue));padding:28px 20px 18px;text-align:center;position:relative;}
 .hm-fac-head::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:36px;background:var(--white);clip-path:ellipse(55% 100% at 50% 100%);}
 .hm-fac-avatar{width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.12);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;margin:0 auto 10px;position:relative;z-index:1;font-family:'Playfair Display',serif;font-size:24px;font-weight:700;color:var(--gold);}
+
+/* faculty card — photo head (when photo exists) */
+.hm-fac-head-photo{background:linear-gradient(135deg,var(--navy),var(--blue));padding-bottom:0;text-align:center;position:relative;}
+.hm-fac-head-photo::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:36px;background:var(--white);clip-path:ellipse(55% 100% at 50% 100%);z-index:2;}
+
 .hm-fac-name{font-family:'Playfair Display',serif;font-size:14px;font-weight:700;color:var(--white);position:relative;z-index:1;}
 .hm-fac-sub{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-top:3px;position:relative;z-index:1;}
+.hm-fac-name-over{font-family:'Playfair Display',serif;font-size:13px;font-weight:700;color:var(--white);position:absolute;bottom:14px;left:0;right:0;z-index:3;padding:0 8px;}
+.hm-fac-sub-over{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);position:absolute;bottom:4px;left:0;right:0;z-index:3;padding:0 8px;}
+
 .hm-fac-body{padding:18px 16px 20px;}
 .hm-fac-tag{display:inline-block;font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gold);background:rgba(201,168,76,.1);padding:3px 10px;border-radius:100px;margin-bottom:8px;}
 .hm-fac-arrow{font-size:12px;color:var(--gray);display:flex;align-items:center;gap:5px;transition:color .2s;}
 .hm-fac-card:hover .hm-fac-arrow{color:var(--gold);}
 .hm-fac-view-all{text-align:center;margin-top:44px;}
 
-/* LEADERSHIP */
+/* ── LEADERSHIP MESSAGES ─────────────────────────────── */
 .hm-leadership{background:var(--white);}
 .hm-leader-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:56px;}
 @media(max-width:900px){.hm-leader-grid{grid-template-columns:1fr;}}
@@ -171,7 +243,7 @@ const css = `
 .hm-leader-btn{font-size:13px;font-weight:600;color:var(--navy);background:none;border:none;cursor:pointer;padding:0;transition:color .2s;font-family:'DM Sans',sans-serif;}
 .hm-leader-btn:hover{color:var(--gold);}
 
-/* EVENTS */
+/* ── EVENTS ──────────────────────────────────────────── */
 .hm-events{background:var(--light);}
 .hm-events-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:56px;}
 @media(max-width:900px){.hm-events-grid{grid-template-columns:1fr 1fr;}}
@@ -184,7 +256,7 @@ const css = `
 .hm-event-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:6px;}
 .hm-event-desc{font-size:14px;color:var(--gray);line-height:1.6;}
 
-/* ALUMNI */
+/* ── ALUMNI ──────────────────────────────────────────── */
 .hm-alumni{background:var(--navy);}
 .hm-alumni-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:56px;}
 @media(max-width:960px){.hm-alumni-grid{grid-template-columns:1fr 1fr;}}
@@ -197,7 +269,7 @@ const css = `
 .hm-alumni-quote{font-size:13px;line-height:1.7;color:rgba(255,255,255,.6);font-style:italic;padding-left:12px;border-left:2px solid var(--gold);}
 .hm-alumni-btn{margin-top:14px;font-size:12px;font-weight:600;color:var(--gold);background:none;border:none;cursor:pointer;padding:0;font-family:'DM Sans',sans-serif;display:block;}
 
-/* CTA */
+/* ── CTA ─────────────────────────────────────────────── */
 .hm-cta{background:linear-gradient(105deg,var(--navy) 0%,#112550 100%);padding:100px 40px;position:relative;overflow:hidden;}
 .hm-cta::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 80% 50%,rgba(201,168,76,.1),transparent 50%);}
 .hm-cta-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:1fr auto;gap:48px;align-items:center;position:relative;z-index:1;}
@@ -207,7 +279,7 @@ const css = `
 .hm-cta-sub{font-size:16px;color:rgba(255,255,255,.6);}
 .hm-cta-btns{display:flex;gap:14px;flex-wrap:wrap;}
 
-/* FOOTER */
+/* ── FOOTER ──────────────────────────────────────────── */
 .hm-footer{background:#060f1e;padding:60px 40px 30px;}
 .hm-footer-inner{max-width:1280px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:60px;padding-bottom:48px;border-bottom:1px solid rgba(255,255,255,.08);}
 @media(max-width:768px){.hm-footer-inner{grid-template-columns:1fr;gap:36px;}}
@@ -226,38 +298,44 @@ const css = `
 
 /* ─────────────────── DATA ─────────────────── */
 const heroSlides = [
-  { heading:['Shaping','Future','Leaders'],   sub:'At Dr A.Q. Khan College, we deliver quality education that empowers students with knowledge, confidence, and skills to excel in life.', img:heroImg1 },
-  { heading:['Excellence','in','Education'],  sub:'Our experienced faculty and modern learning environment ensure every student reaches their full potential.', img:heroImg2 },
-  { heading:['Building','Bright','Futures'],  sub:"We nurture creativity, discipline, and leadership to prepare students for tomorrow's challenges.", img:heroImg3 },
+  { heading:['Shaping','Future','Leaders'],  sub:'At Dr A.Q. Khan College, we deliver quality education that empowers students with knowledge, confidence, and skills to excel in life.', img:heroImg1 },
+  { heading:['Excellence','in','Education'], sub:'Our experienced faculty and modern learning environment ensure every student reaches their full potential.', img:heroImg2 },
+  { heading:['Building','Bright','Futures'], sub:"We nurture creativity, discipline, and leadership to prepare students for tomorrow's challenges.", img:heroImg3 },
 ];
 
+// ── Board of Directors ──────────────────────────────────────────────────────
+// To add a photo: import shireenpic from "./asset/image/shireen.jpg";
+// Then set  photo: shireenpic  on that member. null → shows initials.
 const boardDirectors = [
-  { name:"Ma'am Shireen",        initials:'MC' },
-  { name:'Dr. Najaf Ali Mohsin', initials:'NA' },
-  { name:'Rashid Minhas',        initials:'RM' },
-  { name:'Mehboob Sahib',        initials:'MS' },
+  { name:"Ma'am Shireen",        initials:'MS', photo:null },
+  { name:'Dr. Najaf Ali Mohsin', initials:'NA', photo:directorImg },
+  { name:'Rashid Minhas',        initials:'RM', photo:null },
+  { name:'Mehboob Sahib',        initials:'MS', photo:null },
 ];
 
+// ── Board of Governors ──────────────────────────────────────────────────────
+// Same pattern — set photo: yourImport when ready.
 const boardGovernors = [
-  { name:"Ma'am Hafsa",         initials:'MH' },
-  { name:"Ma'am Anum",          initials:'MA' },
-  { name:'Prof. Aqeel Gul',    initials:'AE' },
-  { name:'Prof. Amjad Qureshi', initials:'AQ' },
+  { name:"Ma'am Hafsa",         initials:'MH', photo:mamHafsa },
+  { name:"Ma'am Anum",          initials:'MA', photo:null },
+  { name:'Prof. Aqeel Gul',     initials:'AG', photo:profAqeel },
+  { name:'Prof. Amjad Qureshi', initials:'AQ', photo:null },
 ];
+  
 
-// ── Exported so FacultyPage can import from a single source ──
 export const facultyData = [
-  { id:1,  name:'Ms. Sadia',       subject:'Accounting and Finance Department',          experience:'8+ Years',  qual:'MS Finance',                  gender:'female', photo:null },
-  { id:2,  name:'Ms. Faiza',       subject:'Humanities',        experience:'10+ Years',  qual:'Bachelor of Arts',             gender:'female', photo:null },
-  { id:3,  name:'Sir Safdar',      subject:'I.Com',          experience:'7+ Years',  qual:'M.Sc. Statistics, University of the Punjab',                                  gender:'male',   photo:null },
-  { id:4,  name:'Sir Arslan',      subject:'English',      experience:'18+ Years',  qual:'Masters in English, Political Science, Islamic studies , MA.Ed Teachers Education  ',                        gender:'male',   photo:null },
-  { id:5,  name:'Sir Sikandar',    subject:'Academic Incharge', experience:'2+ Years',  qual:'BS Artificial Intelligence',               gender:'male',   photo:null },
-  { id:6,  name:'Sir Abdul Rafay', subject:'Accounts Incharge',          experience:'2+ Years',  qual:'BS Law, Law College Rawalpindi',           gender:'male',   photo:null },
-  { id:7,  name:'Ms. Batool',      subject:'Biology',             experience:'7+ Years',  qual:'M.sc Micro Biology',             gender:'female', photo:null },
-  { id:8,  name:'Ms. Ramsha',      subject:'Biology', experience:'8+ Years',  qual:'B.Sc. Biology',     gender:'female', photo:null },
-  { id:9,  name:'Ms. Taskeen',     subject:'Academic Incharge',         experience:'2+ Years',  qual:'BS Agricultural Sciences, Arid Agriculture University',         gender:'female', photo:null },
-  { id:10, name:'Mrs. Nazim',      subject:'TarjamatulQuran',      experience:'2+ Years', qual:'MA Islamiat, International Islamic University',    gender:'female', photo:null },
-  { id:11, name:'Sir Arbab',       subject:'Mathematics',      experience:'4+ Years',  qual:'M.Sc. Mathematics, CUST University',             gender:'male',   photo:null },
+  { id:1,  name:'Ms. Sadia',       subject:'Accounting & Finance',    experience:'8+ Years',  qual:'MS Finance',                                                                       gender:'female', photo:null    },
+  { id:2,  name:'Ms. Faiza',       subject:'Humanities',              experience:'10+ Years', qual:'Bachelor of Arts',                                                                 gender:'female', photo:mamFaiza    },
+  { id:3,  name:'Sir Safdar',      subject:'I.Com',                   experience:'7+ Years',  qual:'M.Sc. Statistics, University of the Punjab',                                       gender:'male',   photo:null    },
+  { id:4,  name:'Sir Arslan',      subject:'English',                 experience:'18+ Years', qual:'Masters in English, Political Science, Islamic Studies, MA.Ed Teachers Education', gender:'male',   photo:null    },
+  { id:5,  name:'Sir Sikandar',    subject:'Academic Incharge',       experience:'2+ Years',  qual:'BS Artificial Intelligence',                                                       gender:'male',   photo:sirSikander    },
+  { id:6,  name:'Sir Abdul Rafay', subject:'Accounts Incharge',       experience:'2+ Years',  qual:'BS Law, Law College Rawalpindi',                                                   gender:'male',   photo:alumni4 },
+  { id:7,  name:'Ms. Batool',      subject:'Biology',                 experience:'7+ Years',  qual:'M.Sc. Microbiology',                                                               gender:'female', photo:null    },
+  { id:8,  name:'Ms. Ramsha',      subject:'Biology',                 experience:'8+ Years',  qual:'B.Sc. Biology',                                                                    gender:'female', photo:null    },
+  { id:9,  name:'Ms. Taskeen',     subject:'Academic Incharge',       experience:'2+ Years',  qual:'BS Agricultural Sciences, Arid Agriculture University',                            gender:'female', photo:null    },
+  { id:10, name:'Mrs. Nazim',      subject:'Tarjamat-ul-Quran',       experience:'2+ Years',  qual:'MA Islamiat, International Islamic University',                                    gender:'female', photo:null    },
+  { id:11, name:'Sir Arbab',       subject:'Mathematics',             experience:'4+ Years',  qual:'M.Sc. Mathematics, CUST University',                                               gender:'male',   photo:null    },
+  { id:12, name:'Sir Daniyal',       subject:'Computer Science',             experience:'7+ Years',  qual:'BS Computer science, AIR University',                                               gender:'male',   photo:sirDaniyal    },
 ];
 
 const eventsData = [
@@ -279,12 +357,12 @@ const alumniData = [
 const leaderMessages = [
   { id:'ceo',       title:'CEO',       role:'Chief Executive Officer', img:ceoImg,       short:'We are dedicated to revolutionizing education beyond boundaries, fostering creativity, confidence, and holistic growth in every student.', full:'At Dr. AQ Khan College, we are dedicated to revolutionizing the dynamics of the education sector, where education thrives beyond boundaries. We foster creativity, confidence, and holistic growth in our students. Our aim is to develop well-rounded individuals empowering them with purpose, integrity, and social responsibility.' },
   { id:'director',  title:'Director',  role:'Director',                img:directorImg,  short:'We are committed to character building, academic excellence, and increasing the literacy rate of Pakistan.', full:'At Dr A Q Khan College, we are committed to fostering character building among our students and increasing the literacy rate of Pakistan. We focus on moral values, critical thinking, and social responsibility to create ethical leaders who contribute positively to society.' },
-  { id:'principal', title:'Principal', role:'Principal',               img:principalImg, short:'We nurture young minds, foster curiosity, and empower students to become confident, capable future leaders.', full:'Welcome to Dr. A.Q Khan College. We focus on nurturing young minds, fostering curiosity, and empowering future leaders. Our institution provides a holistic educational experience with modern facilities, expert faculty, and strong student support systems.' },
+  { id:'principal', title:'Principal', role:'Principal',               img:profAqeel, short:'We nurture young minds, foster curiosity, and empower students to become confident, capable future leaders.', full:'Welcome to Dr. A.Q Khan College. We focus on nurturing young minds, fostering curiosity, and empowering future leaders. Our institution provides a holistic educational experience with modern facilities, expert faculty, and strong student support systems.' },
 ];
 
-const orgTabs = ['Founder', 'CEO', 'Board of Directors', 'Board of Governors'];
+const orgTabs = ['Founder','CEO','Board of Directors','Board of Governors'];
 
-/* ─────────────────── SCROLL FADE ─────────────────── */
+/* ─────────────────── HELPERS ─────────────────── */
 function useFade() {
   useEffect(() => {
     const els = document.querySelectorAll('.hm-fade');
@@ -297,7 +375,62 @@ function useFade() {
   }, []);
 }
 
-/* ─────────────────── COMPONENT ─────────────────── */
+// Reusable board card — shows photo if available, otherwise initials block
+function BoardCard({ person, roleLabel }) {
+  return (
+    <div className="hm-board-card">
+      {person.photo ? (
+        <div className="hm-board-img-wrap">
+          <img src={person.photo} alt={person.name}/>
+          <div className="hm-board-img-overlay"/>
+        </div>
+      ) : (
+        <div className="hm-board-avatar-wrap">
+          <div className="hm-board-avatar">{person.initials}</div>
+        </div>
+      )}
+      <div className="hm-board-body">
+        <div className="hm-board-name">{person.name}</div>
+        <div className="hm-board-title">{roleLabel}</div>
+      </div>
+    </div>
+  );
+}
+
+// Reusable faculty card — shows photo strip if available, otherwise initials head
+function FacCard({ f, i }) {
+  const initials = f.name.split(' ').filter(w=>w.length>1).map(w=>w[0]).slice(0,2).join('');
+  return (
+    <Link to={`/faculty#${f.id}`} className="hm-fac-card hm-fade" style={{transitionDelay:`${i*.06}s`}}>
+      {f.photo ? (
+        <div className="hm-fac-head-photo" style={{position:'relative'}}>
+          <div className="hm-fac-photo-strip">
+            <img src={f.photo} alt={f.name}/>
+            <div className="hm-fac-photo-strip-overlay"/>
+          </div>
+          {/* name sits over the photo overlay */}
+          <div style={{background:'linear-gradient(135deg,var(--navy),var(--blue))',padding:'10px 12px 18px',textAlign:'center',position:'relative'}}>
+            <div className="hm-fac-name">{f.name}</div>
+            <div className="hm-fac-sub">{f.subject}</div>
+          </div>
+          <div style={{position:'absolute',bottom:'-1px',left:0,right:0,height:36,background:'var(--white)',clipPath:'ellipse(55% 100% at 50% 100%)',zIndex:2}}/>
+        </div>
+      ) : (
+        <div className="hm-fac-head">
+          <div className="hm-fac-avatar">{initials}</div>
+          <div className="hm-fac-name">{f.name}</div>
+          <div className="hm-fac-sub">{f.subject}</div>
+        </div>
+      )}
+      <div className="hm-fac-body">
+        <span className="hm-fac-tag">{f.subject}</span>
+        <div className="hm-fac-arrow">View Full Profile →</div>
+      </div>
+    </Link>
+  );
+}
+
+/* ─────────────────── MAIN COMPONENT ─────────────────── */
 export default function Home() {
   const [slide, setSlide]                   = useState(0);
   const [counts, setCounts]                 = useState({ s:0,p:0,f:0,m:0 });
@@ -338,10 +471,12 @@ export default function Home() {
       <style>{css}</style>
       <div className="hm">
 
-        {/* NAV */}
+        {/* ══ NAV ══════════════════════════════════════════════ */}
         <nav className="hm-nav">
           <div className="hm-nav-inner">
-            <span style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:700,color:'var(--gold)',letterSpacing:.5}}>Dr. A.Q. Khan College</span>
+            <span style={{fontFamily:"'Playfair Display',serif",fontSize:18,fontWeight:700,color:'var(--gold)',letterSpacing:.5}}>
+              Dr. A.Q. Khan College
+            </span>
             <ul className="hm-nav-links">
               {[['Home','/'],['About','/about'],['Admissions','/admissions'],['Faculty','/faculty'],['Partnerships','/charter'],['Contact','/contact']].map(([l,p])=>(
                 <li key={p}><Link to={p}>{l}</Link></li>
@@ -360,7 +495,7 @@ export default function Home() {
           </div>
         </nav>
 
-        {/* HERO */}
+        {/* ══ HERO ═════════════════════════════════════════════ */}
         <section className="hm-hero">
           <AnimatePresence mode="wait">
             <motion.img key={slide} src={heroSlides[slide].img} className="hm-hero-img"
@@ -391,7 +526,12 @@ export default function Home() {
             </div>
             <div className="hm-hero-aside">
               <div className="hm-aside-title">At a Glance</div>
-              {[{num:'8+',lbl:'Programs — FSc, ICS, ICOM, FA'},{num:'3',lbl:'University MOUs — IST & Riphah'},{num:'80%+',lbl:'Scholarships for top students'},{num:'NAVTEC & FBISE',lbl:'Affiliated'}].map((s,i)=>(
+              {[
+                {num:'8+',             lbl:'Programs — FSc, ICS, ICOM, FA'},
+                {num:'3',              lbl:'University MOUs — IST & Riphah'},
+                {num:'80%+',           lbl:'Scholarships for top students'},
+                {num:'NAVTEC & FBISE', lbl:'Affiliated'},
+              ].map((s,i)=>(
                 <div key={i} className="hm-aside-stat">
                   <span className="hm-aside-num">{s.num}</span>
                   <span className="hm-aside-lbl">{s.lbl}</span>
@@ -401,7 +541,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* STATS */}
+        {/* ══ STATS ════════════════════════════════════════════ */}
         <div className="hm-stats">
           <div className="hm-stats-grid">
             {countsArr.map((s,i)=>(
@@ -413,7 +553,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* LEADERSHIP MESSAGES */}
+        {/* ══ LEADERSHIP MESSAGES ══════════════════════════════ */}
         <section className="hm-section hm-leadership">
           <div className="hm-container">
             <div className="hm-center hm-fade">
@@ -441,7 +581,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ORG CHART SLIDER */}
+        {/* ══ ORG CHART SLIDER ═════════════════════════════════ */}
         <section className="hm-section hm-org">
           <div className="hm-container">
             <div className="hm-center hm-fade" style={{marginBottom:40}}>
@@ -456,14 +596,14 @@ export default function Home() {
                 ))}
               </div>
             </div>
+
             <AnimatePresence mode="wait">
+
+              {/* Founder */}
               {orgTab===0 && (
                 <motion.div key="founder" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-16}} transition={{duration:.45}} className="hm-founder-slide">
                   <div className="hm-founder-photo-wrap">
-                    {founderImg
-                      ? <img src={founderImg} alt="Dr. Abdul Qadeer Khan" className="hm-founder-photo"/>
-                      : <div className="hm-founder-emblem">⚛️</div>
-                    }
+                    <img src={founderImg} alt="Dr. Abdul Qadeer Khan" className="hm-founder-photo"/>
                     <div className="hm-founder-badge">🇵🇰</div>
                   </div>
                   <div className="hm-founder-name">Dr. Abdul Qadeer Khan</div>
@@ -471,50 +611,53 @@ export default function Home() {
                   <p className="hm-founder-desc">A beacon of scientific achievement and national pride, Dr. A.Q. Khan's vision was to bring world-class education to every Pakistani student. His legacy lives on in every student who walks these halls.</p>
                 </motion.div>
               )}
-                  {orgTab===1 && (
+
+              {/* CEO */}
+              {orgTab===1 && (
                 <motion.div key="ceo" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-16}} transition={{duration:.45}} className="hm-founder-slide">
-                  <div className="hm-ceo-photo-wrap">
+                  <div className="hm-founder-photo-wrap">
                     {ceoImg1
                       ? <img src={ceoImg1} alt="Dr. G.Q. Mohsin" className="hm-founder-photo"/>
-                      : <div className="hm-founder-emblem">⚛️</div>
+                      : <div className="hm-founder-emblem" style={{fontSize:40,fontFamily:"'Playfair Display',serif",fontWeight:700,color:'var(--gold)'}}>GQM</div>
                     }
-                    <div className="hm-founder-badge">🇵🇰</div>
+                    <div className="hm-founder-badge">🏛️</div>
                   </div>
                   <div className="hm-founder-name">Dr. G.Q. Mohsin</div>
-                  <div className="hm-founder-role">CEO of Dr. A.Q. Khan's Institution</div>
+                  <div className="hm-founder-role">CEO · Dr. A.Q. Khan Institution</div>
                 </motion.div>
               )}
+
+              {/* Board of Directors */}
               {orgTab===2 && (
                 <motion.div key="directors" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-16}} transition={{duration:.45}}>
                   <div className="hm-board-grid">
                     {boardDirectors.map((d,i)=>(
-                      <motion.div key={i} className="hm-board-card" initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:i*.08}}>
-                        <div className="hm-board-avatar">{d.initials}</div>
-                        <div className="hm-board-name">{d.name}</div>
-                        <div className="hm-board-title">Board of Directors</div>
+                      <motion.div key={i} initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:i*.08}}>
+                        <BoardCard person={d} roleLabel="Board of Directors"/>
                       </motion.div>
                     ))}
                   </div>
                 </motion.div>
               )}
+
+              {/* Board of Governors */}
               {orgTab===3 && (
                 <motion.div key="governors" initial={{opacity:0,y:20}} animate={{opacity:1,y:0}} exit={{opacity:0,y:-16}} transition={{duration:.45}}>
                   <div className="hm-board-grid">
                     {boardGovernors.map((g,i)=>(
-                      <motion.div key={i} className="hm-board-card" initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:i*.08}}>
-                        <div className="hm-board-avatar">{g.initials}</div>
-                        <div className="hm-board-name">{g.name}</div>
-                        <div className="hm-board-title">Board of Governors</div>
+                      <motion.div key={i} initial={{opacity:0,y:16}} animate={{opacity:1,y:0}} transition={{delay:i*.08}}>
+                        <BoardCard person={g} roleLabel="Board of Governors"/>
                       </motion.div>
                     ))}
                   </div>
                 </motion.div>
               )}
+
             </AnimatePresence>
           </div>
         </section>
 
-        {/* FACULTY GRID */}
+        {/* ══ FACULTY GRID ═════════════════════════════════════ */}
         <section className="hm-section hm-faculty-section">
           <div className="hm-container">
             <div className="hm-center hm-fade">
@@ -526,21 +669,7 @@ export default function Home() {
               </p>
             </div>
             <div className="hm-faculty-grid">
-              {facultyData.map((f,i)=>(
-                <Link key={f.id} to={`/faculty#${f.id}`} className="hm-fac-card hm-fade" style={{transitionDelay:`${i*.06}s`}}>
-                  <div className="hm-fac-head">
-                    <div className="hm-fac-avatar">
-                      {f.name.split(' ').filter(w=>w.length>1).map(w=>w[0]).slice(0,2).join('')}
-                    </div>
-                    <div className="hm-fac-name">{f.name}</div>
-                    <div className="hm-fac-sub">{f.subject}</div>
-                  </div>
-                  <div className="hm-fac-body">
-                    <span className="hm-fac-tag">{f.subject}</span>
-                    <div className="hm-fac-arrow">View Full Profile →</div>
-                  </div>
-                </Link>
-              ))}
+              {facultyData.map((f,i)=><FacCard key={f.id} f={f} i={i}/>)}
             </div>
             <div className="hm-fac-view-all hm-fade">
               <Link to="/faculty" className="hm-btn-gold" style={{display:'inline-flex'}}>Meet All Faculty Members →</Link>
@@ -548,7 +677,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* EVENTS */}
+        {/* ══ EVENTS ═══════════════════════════════════════════ */}
         <section className="hm-section hm-events" id="events">
           <div className="hm-container">
             <div className="hm-center hm-fade">
@@ -572,7 +701,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ALUMNI */}
+        {/* ══ ALUMNI ═══════════════════════════════════════════ */}
         <section className="hm-section hm-alumni">
           <div className="hm-container">
             <div className="hm-center hm-fade">
@@ -598,7 +727,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA */}
+        {/* ══ CTA ══════════════════════════════════════════════ */}
         <div className="hm-cta">
           <div className="hm-cta-inner">
             <div className="hm-fade">
@@ -612,7 +741,7 @@ export default function Home() {
           </div>
         </div>
 
-        {/* FOOTER */}
+        {/* ══ FOOTER ═══════════════════════════════════════════ */}
         <footer className="hm-footer">
           <div className="hm-footer-inner">
             <div>

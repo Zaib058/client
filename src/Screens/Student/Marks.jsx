@@ -1,88 +1,60 @@
+// ── Student/Marks.jsx ──────────────────────────────────────────
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { useSelector } from "react-redux";
-import Heading from "../../components/Heading";
 import { baseApiURL } from "../../baseUrl";
 
+const MAX = { internal: 15, external: 25 };
+const color = (s, m) => { const p = s / m; return p >= 0.8 ? "#10b981" : p >= 0.5 ? "#f59e0b" : "#ef4444"; };
+
 const Marks = () => {
-  const userData = useSelector((state) => state.userData);
-  const [internal, setInternal] = useState();
-  const [external, setExternal] = useState();
+  const userData = useSelector(s => s.userData);
+  const [internal, setInternal] = useState(null);
+  const [external, setExternal] = useState(null);
 
   useEffect(() => {
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    axios
-      .post(
-        `${baseApiURL()}/marks/getMarks`,
-        { enrollmentNo: userData.enrollmentNo },
-        {
-          headers: headers,
+    axios.post(`${baseApiURL()}/marks/getMarks`, { enrollmentNo: userData.enrollmentNo }, { headers: { "Content-Type": "application/json" } })
+      .then(r => {
+        if (r.data.Mark?.length > 0) {
+          setInternal(r.data.Mark[0].internal || null);
+          setExternal(r.data.Mark[0].external || null);
         }
-      )
-      .then((response) => {
-        if (response.data.length !== 0) {
-          setInternal(response.data.Mark[0].internal);
-          setExternal(response.data.Mark[0].external);
-        }
-      })
-      .catch((error) => {
-        toast.dismiss();
-        console.log(error);
-      });
+      }).catch(err => { toast.dismiss(); console.log(err); });
   }, [userData.enrollmentNo]);
 
-  return (
-    <div className="w-full mx-auto mt-10 flex justify-center items-start flex-col mb-10">
-      <Heading title={`Marks of Class ${userData.semester}`} />
-      <div className="mt-14 w-full flex gap-20">
-        {internal && (
-          <div className="w-1/2 shadow-md p-4">
-            <p className="border-b-2 border-red-500 text-2xl font-semibold pb-2">
-              Daily Test Marks (Out of 15)
-            </p>
-            <div className="mt-5">
-              {Object.keys(internal).map((item, index) => {
-                return (
-                  <div
-                    key={index}
-                    className="flex justify-between items-center w-full text-lg mt-2"
-                  >
-                    <p className="w-full">{item}</p>
-                    <span>{internal[item]}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-        {external && (
-          <div className="w-1/2 shadow-md p-4">
-            <p className="border-b-2 border-red-500 text-2xl font-semibold pb-2">
-              Check Points Marks (Out of 25)
-            </p>
-            <div className="mt-5">
-              {Object.keys(external).map((item, index) => {
-                console.log(external);
-                return (
-                  <div
-                    key={index}
-                    className="flex justify-between items-center w-full text-lg mt-2"
-                  >
-                    <p className="w-full">{item}</p>
-                    <span>{external[item]}</span>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-        {!internal && !external && <p>No Marks Available At The Moment!</p>}
+  const renderSection = (data, max, label) => (
+    <div className="card-lg">
+      <div style={{ borderBottom: "1px solid var(--border)", paddingBottom: 12, marginBottom: 18 }}>
+        <div style={{ fontFamily: "var(--font-head)", fontStyle: "italic", fontSize: 18, color: "var(--text)" }}>{label}</div>
+        <div style={{ fontSize: 12, color: "var(--muted)", marginTop: 3 }}>Out of {max} marks</div>
       </div>
+      {Object.entries(data).map(([sub, score]) => (
+        <div className="mark-row" key={sub}>
+          <span className="mark-sub">{sub}</span>
+          <div className="mark-bar-bg">
+            <div className="mark-bar-fill" style={{ width: `${Math.min((score / max) * 100, 100)}%`, background: color(score, max) }} />
+          </div>
+          <span className="mark-score" style={{ color: color(score, max) }}>{score}</span>
+        </div>
+      ))}
     </div>
   );
-};
 
+  return (
+    <>
+      <div style={{ fontFamily: "var(--font-head)", fontStyle: "italic", fontSize: 24, color: "var(--text)", marginBottom: 20 }}>
+        Academic Results — Year {userData.semester}
+      </div>
+      {(internal || external) ? (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+          {internal && renderSection(internal, MAX.internal, "Daily Test Marks")}
+          {external && renderSection(external, MAX.external, "Check Point Marks")}
+        </div>
+      ) : (
+        <div className="empty card-lg"><div className="empty-icon">◎</div><p>No marks recorded yet.</p><small>Check back after your assessments.</small></div>
+      )}
+    </>
+  );
+};
 export default Marks;

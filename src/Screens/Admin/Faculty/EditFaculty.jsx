@@ -2,315 +2,181 @@ import React, { useState } from "react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { baseApiURL } from "../../../baseUrl";
-import { FiSearch, FiUpload, FiX } from "react-icons/fi";
 
 const EditFaculty = () => {
-  const [file, setFile] = useState();
-  const [searchActive, setSearchActive] = useState(false);
-  const [data, setData] = useState({
-    employeeId: "",
-    firstName: "",
-    middleName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    department: "",
-    gender: "",
-    experience: "",
-    post: "",
-    profile: "",
+  const [search, setSearch] = useState("");
+  const [found, setFound] = useState(false);
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState("");
+  const [id, setId] = useState("");
+  const [d, setD] = useState({
+    employeeId: "", firstName: "", middleName: "", lastName: "",
+    email: "", phoneNumber: "", department: "", gender: "",
+    experience: "", post: "", profile: "",
   });
-  const [id, setId] = useState();
-  const [search, setSearch] = useState();
-  const [previewImage, setPreviewImage] = useState("");
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
-    const imageUrl = URL.createObjectURL(selectedFile);
-    setPreviewImage(imageUrl);
+  const handleFile = e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    setFile(f);
+    setPreview(URL.createObjectURL(f));
   };
 
-  const updateFacultyProfile = (e) => {
+  const doSearch = e => {
     e.preventDefault();
-    toast.loading("Updating Faculty");
-    const headers = {
-      "Content-Type": "multipart/form-data",
-    };
-    const formData = new FormData();
-    formData.append("employeeId", data.employeeId);
-    formData.append("firstName", data.firstName);
-    formData.append("middleName", data.middleName);
-    formData.append("lastName", data.lastName);
-    formData.append("email", data.email);
-    formData.append("phoneNumber", data.phoneNumber);
-    formData.append("department", data.department);
-    formData.append("experience", data.experience);
-    formData.append("gender", data.gender);
-    formData.append("post", data.post);
-    if (file) {
-      formData.append("type", "profile");
-      formData.append("profile", file);
-    }
-    axios
-      .put(`${baseApiURL()}/faculty/details/updateDetails/${id}`, formData, {
-        headers: headers,
-      })
-      .then((response) => {
+    if (!search.trim()) return toast.error("Enter an employee ID.");
+    toast.loading("Searching…");
+    axios.post(`${baseApiURL()}/faculty/details/getDetails`,
+      { employeeId: search }, { headers: { "Content-Type": "application/json" } })
+      .then(r => {
         toast.dismiss();
-        if (response.data.success) {
-          toast.success(response.data.message);
-          clearSearchHandler();
-        } else {
-          toast.error(response.data.message);
-        }
-      })
-      .catch((error) => {
-        toast.dismiss();
-        toast.error(error.response.data.message);
-      });
-  };
-
-  const searchFacultyHandler = (e) => {
-    setSearchActive(true);
-    e.preventDefault();
-    toast.loading("Getting Faculty");
-    const headers = {
-      "Content-Type": "application/json",
-    };
-    axios
-      .post(
-        `${baseApiURL()}/faculty/details/getDetails`,
-        { employeeId: search },
-        { headers }
-      )
-      .then((response) => {
-        toast.dismiss();
-        if (response.data.user.length === 0) {
-          toast.error("No Faculty Found!");
-        } else {
-          toast.success(response.data.message);
-          setId(response.data.user[0]._id);
-          setData({
-            employeeId: response.data.user[0].employeeId,
-            firstName: response.data.user[0].firstName,
-            middleName: response.data.user[0].middleName,
-            lastName: response.data.user[0].lastName,
-            email: response.data.user[0].email,
-            phoneNumber: response.data.user[0].phoneNumber,
-            post: response.data.user[0].post,
-            department: response.data.user[0].department,
-            gender: response.data.user[0].gender,
-            profile: response.data.user[0].profile,
-            experience: response.data.user[0].experience,
+        if (r.data.success && r.data.user.length > 0) {
+          const u = r.data.user[0];
+          setId(u._id);
+          setFound(true);
+          toast.success("Faculty found!");
+          setD({
+            employeeId: u.employeeId, firstName: u.firstName,
+            middleName: u.middleName || "", lastName: u.lastName,
+            email: u.email, phoneNumber: u.phoneNumber,
+            department: u.department, gender: u.gender,
+            experience: u.experience || "", post: u.post, profile: u.profile,
           });
+        } else {
+          toast.error("No faculty found.");
         }
       })
-      .catch((error) => {
-        toast.dismiss();
-        if (error?.response?.data) toast.error(error.response.data.message);
-        console.error(error);
-      });
+      .catch(err => { toast.dismiss(); toast.error(err.response?.data?.message || "Error"); });
   };
 
-  const clearSearchHandler = () => {
-    setSearchActive(false);
-    setSearch("");
-    setId("");
-    setPreviewImage();
-    setData({
-      employeeId: "",
-      firstName: "",
-      middleName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-      department: "",
-      gender: "",
-      experience: "",
-      post: "",
-      profile: "",
-    });
+  const clear = () => {
+    setSearch(""); setFound(false); setFile(null); setPreview(""); setId("");
+    setD({ employeeId: "", firstName: "", middleName: "", lastName: "", email: "", phoneNumber: "", department: "", gender: "", experience: "", post: "", profile: "" });
   };
+
+  const submit = e => {
+    e.preventDefault();
+    toast.loading("Updating…");
+    const fd = new FormData();
+    Object.entries(d).forEach(([k, v]) => { if (v) fd.append(k, v); });
+    if (file) { fd.append("type", "profile"); fd.append("profile", file); }
+    axios.put(`${baseApiURL()}/faculty/details/updateDetails/${id}`, fd,
+      { headers: { "Content-Type": "multipart/form-data" } })
+      .then(r => {
+        toast.dismiss();
+        if (r.data.success) { toast.success("Updated!"); clear(); }
+        else toast.error(r.data.message);
+      })
+      .catch(err => { toast.dismiss(); toast.error(err.response?.data?.message || "Error"); });
+  };
+
   return (
-    <div className="my-6 mx-auto w-full">
-      <form
-        className="flex justify-center items-center border-2 border-blue-500 rounded w-[40%] mx-auto"
-        onSubmit={searchFacultyHandler}
-      >
-        <input
-          type="text"
-          className="px-6 py-3 w-full outline-none"
-          placeholder="Employee Id."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        {!searchActive && (
-          <button className="px-4 text-2xl hover:text-blue-500" type="submit">
-            <FiSearch />
-          </button>
-        )}
-        {searchActive && (
-          <button
-            className="px-4 text-2xl hover:text-blue-500"
-            onClick={clearSearchHandler}
-          >
-            <FiX />
-          </button>
-        )}
+    <>
+      <form className="search-bar" onSubmit={doSearch} style={{ marginBottom: 18 }}>
+        <input className="search-inp" placeholder="Search by Employee ID…"
+          value={search} onChange={e => setSearch(e.target.value)} />
+        {found
+          ? <button type="button" className="search-btn" onClick={clear}>✕</button>
+          : <button type="submit" className="search-btn">⌕</button>
+        }
       </form>
-      {search && id && (
-        <form
-          onSubmit={updateFacultyProfile}
-          className="w-[70%] flex justify-center items-center flex-wrap gap-6 mx-auto mt-10"
-        >
-          <div className="w-[40%]">
-            <label htmlFor="firstname" className="leading-7 text-sm ">
-              Enter First Name
-            </label>
-            <input
-              type="text"
-              id="firstname"
-              value={data.firstName}
-              onChange={(e) => setData({ ...data, firstName: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="middlename" className="leading-7 text-sm ">
-              Enter Middle Name (optional)
-            </label>
-            <input
-              type="text"
-              id="middlename"
-              value={data.middleName}
-              onChange={(e) => setData({ ...data, middleName: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="lastname" className="leading-7 text-sm ">
-              Enter Last Name
-            </label>
-            <input
-              type="text"
-              id="lastname"
-              value={data.lastName}
-              onChange={(e) => setData({ ...data, lastName: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="employeeId" className="leading-7 text-sm ">
-              Enter Employee Id
-            </label>
-            <input
-              disabled
-              type="number"
-              id="employeeId"
-              value={data.employeeId}
-              onChange={(e) => setData({ ...data, employeeId: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="phoneNumber" className="leading-7 text-sm ">
-              Enter Phone Number
-            </label>
-            <input
-              type="number"
-              id="phoneNumber"
-              value={data.phoneNumber}
-              onChange={(e) =>
-                setData({ ...data, phoneNumber: e.target.value })
-              }
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="email" className="leading-7 text-sm ">
-              Enter Email Address
-            </label>
-            <input
-              type="email"
-              id="email"
-              value={data.email}
-              onChange={(e) => setData({ ...data, email: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="post" className="leading-7 text-sm ">
-              POST
-            </label>
-            <input
-              type="text"
-              id="post"
-              value={data.post}
-              onChange={(e) => setData({ ...data, post: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="experience" className="leading-7 text-sm ">
-              Experience
-            </label>
-            <input
-              type="number"
-              id="experience"
-              value={data.experience}
-              onChange={(e) => setData({ ...data, experience: e.target.value })}
-              className="w-full bg-blue-50 rounded border focus:border-dark-green focus:bg-secondary-light focus:ring-2 focus:ring-light-green text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
-            />
-          </div>
-          <div className="w-[40%]">
-            <label htmlFor="file" className="leading-7 text-sm ">
-              Select New Profile
-            </label>
-            <label
-              htmlFor="file"
-              className="px-2 bg-blue-50 py-3 rounded-sm text-base w-full flex justify-center items-center cursor-pointer"
-            >
-              Upload
-              <span className="ml-2">
-                <FiUpload />
-              </span>
-            </label>
-            <input
-              hidden
-              type="file"
-              id="file"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-          </div>
-          {previewImage && (
-            <div className="w-full flex justify-center items-center">
-              <img
-                src={process.env.REACT_APP_MEDIA_LINK + "/" + previewImage}
-                alt="faculty"
-                className="h-36"
-              />
+
+      {found && (
+        <div className="found-banner">
+          ✓ Editing: <strong>{d.firstName} {d.lastName}</strong> — ID: {d.employeeId}
+        </div>
+      )}
+
+      {found && (
+        <form onSubmit={submit}>
+          <div className="form-grid">
+            <div className="section-rule">Personal Information</div>
+
+            <div className="field">
+              <div className="field-lbl">First Name *</div>
+              <input className="field-inp" value={d.firstName}
+                onChange={e => setD(p => ({ ...p, firstName: e.target.value }))} required />
             </div>
-          )}
-          {!previewImage && data.profile && (
-            <div className="w-full flex justify-center items-center">
-              <img
-                src={process.env.REACT_APP_MEDIA_LINK + "/" + data.profile}
-                alt="faculty"
-                className="h-36"
-              />
+            <div className="field">
+              <div className="field-lbl">Middle Name</div>
+              <input className="field-inp" value={d.middleName}
+                onChange={e => setD(p => ({ ...p, middleName: e.target.value }))} />
             </div>
-          )}
-          <button
-            type="submit"
-            className="bg-blue-500 px-6 py-3 rounded-sm mb-6 text-white"
-          >
-            Update Faculty
-          </button>
+            <div className="field">
+              <div className="field-lbl">Last Name *</div>
+              <input className="field-inp" value={d.lastName}
+                onChange={e => setD(p => ({ ...p, lastName: e.target.value }))} required />
+            </div>
+
+            {/* Gender values capitalized to match Mongoose enum: "Male" / "Female" */}
+            <div className="field">
+              <div className="field-lbl">Gender</div>
+              <select className="field-sel" value={d.gender}
+                onChange={e => setD(p => ({ ...p, gender: e.target.value }))}>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div className="section-rule">Professional (partial read-only)</div>
+
+            <div className="field">
+              <div className="field-lbl">Employee ID</div>
+              <input className="field-inp" value={d.employeeId} disabled />
+            </div>
+            <div className="field">
+              <div className="field-lbl">Department</div>
+              <input className="field-inp" value={d.department} disabled />
+            </div>
+            <div className="field">
+              <div className="field-lbl">Post</div>
+              <input className="field-inp" value={d.post}
+                onChange={e => setD(p => ({ ...p, post: e.target.value }))} />
+            </div>
+            <div className="field">
+              <div className="field-lbl">Experience (yrs)</div>
+              <input className="field-inp" type="number" min="0" value={d.experience}
+                onChange={e => setD(p => ({ ...p, experience: e.target.value }))} />
+            </div>
+
+            <div className="section-rule">Contact</div>
+
+            <div className="field">
+              <div className="field-lbl">Email</div>
+              <input className="field-inp" type="email" value={d.email}
+                onChange={e => setD(p => ({ ...p, email: e.target.value }))} />
+            </div>
+            <div className="field">
+              <div className="field-lbl">Phone</div>
+              <input className="field-inp" type="number" value={d.phoneNumber}
+                onChange={e => setD(p => ({ ...p, phoneNumber: e.target.value }))} />
+            </div>
+
+            <div className="section-rule">Profile Photo</div>
+
+            <div className="field span2">
+              <label className="upload-zone" htmlFor="edit-fac-photo">
+                <div style={{ fontSize: 26 }}>📷</div>
+                <p>{file ? file.name : "Click to change photo"}</p>
+              </label>
+              <input type="file" id="edit-fac-photo" accept="image/*"
+                style={{ display: "none" }} onChange={handleFile} />
+              {(preview || d.profile) && (
+                <div className="preview-strip">
+                  <img src={preview || process.env.REACT_APP_MEDIA_LINK + "/" + d.profile} alt="Preview" />
+                  <p>{preview ? "New photo" : "Current photo"}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="field span2">
+              <button type="submit" className="btn btn-primary btn-full">✓ Update Faculty</button>
+            </div>
+          </div>
         </form>
       )}
-    </div>
+    </>
   );
 };
 
