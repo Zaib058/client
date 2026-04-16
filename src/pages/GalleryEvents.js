@@ -32,6 +32,41 @@ import img57  from './asset/image/img57.jpg';
 import board1  from './asset/image/board1.jpg';
 import board2 from './asset/image/board2.jpg';
 import board3  from './asset/image/board3.jpg';
+import girlsbatch from './asset/image/girlsbatch.jpg';
+import boysbatch from './asset/image/boysbatch.jpg'; 
+import chairmanfederalboard from './asset/image/chairmanfederalboard.jpg';
+import chairman01 from './asset/image/chairman01.jpg';
+import chairman2 from './asset/image/chairman2.jpg';  
+import chairman3 from './asset/image/chairman3.jpg';
+import chairman4 from './asset/image/chairman4.jpg';
+import clgtrip from './asset/image/clgtrip.jpg';
+import clgtrip2 from './asset/image/clgtrip2.jpg';
+import clgtrip3 from './asset/image/clgtrip1.jpg';
+import ptm from './asset/image/ptm.jpg';
+import ptm2 from './asset/image/ptm2.jpg';
+import ptm3 from './asset/image/ptm3.jpg';
+import ptm7 from './asset/image/ptm7.jpg';
+import riphah1 from './asset/image/riphah1.jpg';
+import riphah2 from './asset/image/riphah2.jpg';
+import riphah3 from './asset/image/riphah3.jpg';
+import riphah4 from './asset/image/riphah4.jpg';
+import safsobfbi1 from './asset/image/safsobfbi5.jpg';
+import safsobfbi2 from './asset/image/safsobfbi2.jpg';
+import safsobfbi3 from './asset/image/safsobfbi3.jpg';
+import safsobfbi4 from './asset/image/safsobfbi4.jpg';
+import talent1 from './asset/image/talenthunt1.jpg';
+import talent6 from './asset/image/talenthunt6.jpg';
+import talent7 from './asset/image/talenthunt7.jpg';    
+import talent8 from './asset/image/talenthunt8.jpg';
+import talenthunt2 from './asset/image/talenthunt2.jpg';
+import talenthunt3 from './asset/image/talenthunt3.jpg';
+import talenthunt4 from './asset/image/talenthunt4.jpg';
+import talenthunt9 from './asset/image/talenthunt9.jpg';
+import youthclub from './asset/image/youthclub.jpg';
+import youthclub2 from './asset/image/youthclub2.jpg';
+import youthclub3 from './asset/image/youthclub3.jpg';
+import youthclub4 from './asset/image/youthclub4.jpg';  
+
 
 const css = `
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -197,17 +232,32 @@ const categories = [
       { src: img17, cat: 'Parents Meeting' },   { src: img18, cat: 'Sports' },
       { src: img19, cat: 'Sports' },            { src: img20, cat: 'Sports' },
       { src: img09, cat: 'Student Trips' },     { src: img10, cat: 'Iqbal Day' },
-  { src: img49, cat: 'PBA' },       { src: img54, cat: 'Orientation' },
-  { src: img50, cat: 'PBA' },       { src: img55, cat: 'Orientation' },
+     { src: img49, cat: 'PBA' },       { src: img54, cat: 'Orientation' },
+      { src: img50, cat: 'PBA' },       { src: img55, cat: 'Orientation' },
   { src: img51, cat: 'PBA' }, { src: img56, cat: 'Orientation' },
   { src: board1, cat: 'Board Meeting' },       { src: img57, cat: 'Orientation' },
-  { src: board2, cat: 'Board Meeting' }, { src: board3, cat: 'Board Meeting' }
-
+  { src: girlsbatch, cat: 'Girls Batch 2023-2024' }, { src: boysbatch, cat: 'Boys Batch 2023-2024' },
+  { src: chairmanfederalboard, cat: 'Chairman Federal Board Meeting with Director' }, { src: chairman01, cat: 'Chairman Federal Board Meeting with Director' },
+  { src: chairman3, cat: 'Chairman Federal Board Meeting with Director' }, { src: chairman2, cat: 'Chairman Federal Board Meeting with Director' },
+  { src: chairman4, cat: 'Chairman Federal Board Meeting with Director' }, { src: clgtrip, cat: 'College Trip' },
+  { src: clgtrip2, cat: 'College Trip' }, { src: clgtrip3, cat: 'College Trip' },
+  { src: ptm, cat: 'Parent-Teacher Meeting' }, { src: ptm3, cat: 'Parent-Teacher Meeting' },
+  { src: ptm7, cat: 'Parent-Teacher Meeting' }, { src: ptm2, cat: 'Parent-Teacher Meeting' },
+  { src: riphah1, cat: 'Educatinal Trip to Riphah University' }, { src: riphah2, cat: 'Educatinal Trip to Riphah University' },
+  { src: riphah3, cat: 'Educatinal Trip to Riphah University' }, { src: riphah4, cat: 'Educatinal Trip to Riphah University' },
+  { src: safsobfbi2, cat: 'STEM ACTIVITIES FOR STUDENTS ORGANIZED BY FEDERAL BOARD ISLAMABAD' }, { src: safsobfbi1, cat: 'STEM ACTIVITIES FOR STUDENTS ORGANIZED BY FEDERAL BOARD ISLAMABAD' },
+  { src: safsobfbi3, cat: 'STEM ACTIVITIES FOR STUDENTS ORGANIZED BY FEDERAL BOARD ISLAMABAD' }, { src: safsobfbi4, cat: 'STEM ACTIVITIES FOR STUDENTS ORGANIZED BY FEDERAL BOARD ISLAMABAD' },
+  { src: talent6, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' }, { src: talenthunt4, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' },
+  { src: talent8, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' }, { src: talenthunt9, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' },
+  { src: talent7, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' }, { src: talenthunt3, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' },
+  { src: talent1, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' }, { src: talenthunt2, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' },
+  { src: youthclub, cat: 'Sir Abu Ibrahim Umar T. Reknown Islamic and Motivational Speaker From YouthClub Speakers  visited Dr A.Q.Khan College Harley  Campus for addressing the youth' }, { src: youthclub2, cat: 'Sir Abu Ibrahim Umar T. Reknown Islamic and Motivational Speaker From YouthClub Speakers  visited Dr A.Q.Khan College Harley  Campus for addressing the youth' },
+  { src: youthclub3, cat: 'Sir Abu Ibrahim Umar T. Reknown Islamic and Motivational Speaker From YouthClub Speakers  visited Dr A.Q.Khan College Harley  Campus for addressing the youth' }, { src: youthclub4, cat: 'Sir Abu Ibrahim Umar T. Reknown Islamic and Motivational Speaker From YouthClub Speakers  visited Dr A.Q.Khan College Harley  Campus for addressing the youth' },
     ]
   }
 ];
 
-const filterTabs = ['All', 'Career Counseling', 'PBA' ,'Student Trips', 'Iqbal Day', 'Parents Meeting', 'Board Meeting' ,'Sports', 'Orientation', 'Campus Life'];
+const filterTabs = ['All', 'Chairman Federal Board Meeting with Director','College Trip','Parent-Teacher Meeting', 'Career Counseling', 'PBA' ,'Student Trips', 'Iqbal Day', 'Parents Meeting', 'Board Meeting' ,'Sports', 'Orientation', 'Campus Life'];
 
 const allImages = [
   { src: img15, cat: 'Career Counseling' }, { src: img04, cat: 'Career Counseling' },
@@ -225,7 +275,23 @@ const allImages = [
   { src: img50, cat: 'PBA' },       { src: img55, cat: 'Orientation' },
   { src: img51, cat: 'PBA' }, { src: img56, cat: 'Orientation' },
   { src: board1, cat: 'Board Meeting' },       { src: img57, cat: 'Orientation' },
-  { src: board2, cat: 'Board Meeting' }, { src: board3, cat: 'Board Meeting' }
+  { src: board2, cat: 'Board Meeting' }, { src: board3, cat: 'Board Meeting' },{ src: girlsbatch, cat: 'Girls Batch 2023-2024' }, { src: boysbatch, cat: 'Boys Batch 2023-2024' },
+  { src: chairmanfederalboard, cat: 'Chairman Federal Board Meeting with Director' }, { src: chairman01, cat: 'Chairman Federal Board Meeting with Director' },
+  { src: chairman3, cat: 'Chairman Federal Board Meeting with Director' }, { src: chairman2, cat: 'Chairman Federal Board Meeting with Director' },
+  { src: chairman4, cat: 'Chairman Federal Board Meeting with Director' }, { src: clgtrip, cat: 'College Trip' },
+  { src: clgtrip2, cat: 'College Trip' }, { src: clgtrip3, cat: 'College Trip' },
+  { src: ptm, cat: 'Parent-Teacher Meeting' }, { src: ptm3, cat: 'Parent-Teacher Meeting' },
+  { src: ptm7, cat: 'Parent-Teacher Meeting' }, { src: ptm2, cat: 'Parent-Teacher Meeting' },
+  { src: riphah1, cat: 'Educatinal Trip to Riphah University' }, { src: riphah2, cat: 'Educatinal Trip to Riphah University' },
+  { src: riphah3, cat: 'Educatinal Trip to Riphah University' }, { src: riphah4, cat: 'Educatinal Trip to Riphah University' },
+  { src: safsobfbi2, cat: 'STEM ACTIVITIES FOR STUDENTS ORGANIZED BY FEDERAL BOARD ISLAMABAD' }, { src: safsobfbi1, cat: 'STEM ACTIVITIES FOR STUDENTS ORGANIZED BY FEDERAL BOARD ISLAMABAD' },
+  { src: safsobfbi3, cat: 'STEM ACTIVITIES FOR STUDENTS ORGANIZED BY FEDERAL BOARD ISLAMABAD' }, { src: safsobfbi4, cat: 'STEM ACTIVITIES FOR STUDENTS ORGANIZED BY FEDERAL BOARD ISLAMABAD' },
+  { src: talent6, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' }, { src: talenthunt4, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' },
+  { src: talent8, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' }, { src: talenthunt9, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' },
+  { src: talent7, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' }, { src: talenthunt3, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' },
+  { src: talent1, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' }, { src: talenthunt2, cat: 'Talent hunt (inter school competition organized in Dr.A.Q Khan College)' },
+  { src: youthclub, cat: 'Sir Abu Ibrahim Umar T. Reknown Islamic and Motivational Speaker From YouthClub Speakers  visited Dr A.Q.Khan College Harley  Campus for addressing the youth' }, { src: youthclub2, cat: 'Sir Abu Ibrahim Umar T. Reknown Islamic and Motivational Speaker From YouthClub Speakers  visited Dr A.Q.Khan College Harley  Campus for addressing the youth' },
+  { src: youthclub3, cat: 'Sir Abu Ibrahim Umar T. Reknown Islamic and Motivational Speaker From YouthClub Speakers  visited Dr A.Q.Khan College Harley  Campus for addressing the youth' }, { src: youthclub4, cat: 'Sir Abu Ibrahim Umar T. Reknown Islamic and Motivational Speaker From YouthClub Speakers  visited Dr A.Q.Khan College Harley  Campus for addressing the youth' }
 ];
 
 export default function GalleryEvents() {

@@ -16,7 +16,9 @@ import FacultyHome from "./Screens/Faculty/Home";
 import AdminHome from "./Screens/Admin/Home";
 import Login from './components/Login'
 import MessageDetail from "./pages/MessageDetail";
-import FacultyPage from './pages/Facultypage.jsx'
+import FacultyPage from './pages/Facultypage.jsx';
+import LeadershipPage from './pages/Leadershippage.jsx';
+
 
 
 function App() {
@@ -34,6 +36,8 @@ function App() {
             <Route path="/charter" element={<Charter/>}/>
             <Route path="/message/:id" element={<MessageDetail />} />
             <Route path="/faculty" element={<FacultyPage />} />
+            <Route path="/leadership" element={<LeadershipPage />} />
+            <Route path="/leadership/:id" element={<LeadershipPage />} />
         </Route>
 
          <Route path="/login" element={<Login />} />
