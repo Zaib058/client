@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/client/static/css/main.8e438e0a.css",
-    "main.js": "/client/static/js/main.8c560cc5.js",
+    "main.css": "/client/static/css/main.31f792c6.css",
+    "main.js": "/client/static/js/main.e52e4b79.js",
     "static/js/488.195151cc.chunk.js": "/client/static/js/488.195151cc.chunk.js",
     "static/media/talenthunt7.jpg": "/client/static/media/talenthunt7.cdef6edf6fe9f8b8b2ab.jpg",
     "static/media/talenthunt1.jpg": "/client/static/media/talenthunt1.c7883a556ad06824248d.jpg",
@@ -64,7 +64,6 @@
     "static/media/chairman3.jpg": "/client/static/media/chairman3.b18b063ff1885d203b45.jpg",
     "static/media/img5.jpg": "/client/static/media/img5.24237c5aa31489f5e986.jpg",
     "static/media/img1.jpg": "/client/static/media/img1.7ee3d7541228bb20c27a.jpg",
-    "static/media/principle.jpg": "/client/static/media/principle.47f648f5be79a2569a4b.jpg",
     "static/media/mamAnum.jpg": "/client/static/media/mamAnum.acfb5cd218159c25822c.jpg",
     "static/media/sirSikander.jpg": "/client/static/media/sirSikander.5d5c862e7fe0a14871e6.jpg",
     "static/media/clgtrip2.jpg": "/client/static/media/clgtrip2.35f75018cac1070e0418.jpg",
@@ -78,12 +77,12 @@
     "static/media/boysbatch.jpg": "/client/static/media/boysbatch.843dd1a93e1d77c2fbf6.jpg",
     "static/media/img22.jpg": "/client/static/media/img22.4e77f796a6b0c00a9531.jpg",
     "static/media/director.jpg": "/client/static/media/director.125b198760bcc3498b66.jpg",
-    "static/media/alumni4.jpg": "/client/static/media/alumni4.eb14d7223f091bee3556.jpg",
     "static/media/ceoimg.jpg": "/client/static/media/ceoimg.ac4f22fbc079f608db58.jpg",
     "static/media/hero2.jpg": "/client/static/media/hero2.57781ba47b3574b0859f.jpg",
     "static/media/sirRashid.jpg": "/client/static/media/sirRashid.b27d42a8546fd27314ed.jpg",
     "static/media/sir rafay.jpg": "/client/static/media/sir rafay.185d5f9b92cb60f2356e.jpg",
     "static/media/girlsbatch.jpg": "/client/static/media/girlsbatch.48635dfd742f6ce92731.jpg",
+    "static/media/navtech.jpg": "/client/static/media/navtech.fa44c77ae778f5feb6b5.jpg",
     "static/media/chairmanfederalboard.jpg": "/client/static/media/chairmanfederalboard.8f883e67671bf1250c94.jpg",
     "static/media/mam Batool.jpg": "/client/static/media/mam Batool.870c896bef647c986582.jpg",
     "static/media/mamHafsa.jpg": "/client/static/media/mamHafsa.f6b76078084e880f8ce6.jpg",
@@ -109,12 +108,12 @@
     "static/media/img55.jpg": "/client/static/media/img55.4db583a8d843db79d143.jpg",
     "static/media/img17.jpg": "/client/static/media/img17.4340f854e14fa40d5918.jpg",
     "index.html": "/client/index.html",
-    "main.8e438e0a.css.map": "/client/static/css/main.8e438e0a.css.map",
-    "main.8c560cc5.js.map": "/client/static/js/main.8c560cc5.js.map",
+    "main.31f792c6.css.map": "/client/static/css/main.31f792c6.css.map",
+    "main.e52e4b79.js.map": "/client/static/js/main.e52e4b79.js.map",
     "488.195151cc.chunk.js.map": "/client/static/js/488.195151cc.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.8e438e0a.css",
-    "static/js/main.8c560cc5.js"
+    "static/css/main.31f792c6.css",
+    "static/js/main.e52e4b79.js"
   ]
 }
